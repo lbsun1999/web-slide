@@ -11,10 +11,45 @@
 
 ## 快速开始
 
-1. 在 GitHub 点击 **Code → Download ZIP** 并解压，或 `git clone` 本仓库。
+1. 按下方“下载方式”获取一套或全部模板，并解压。
 2. 进入所需学校的子目录，用 Chrome 或 Edge 打开 `template.html`。
 3. 先复制模板再修改。工具栏支持文字编辑、加粗、主题色、排版检查和“保存HTML”。网页修改后需保存下载，才会保留。
 4. 分享成品时，可发送“保存HTML”生成的独立文件；源模板分享时应保留完整子目录。
+
+## 下载方式
+
+**两套模板可以独立使用，不必每次都下载整个项目。** GitHub 的 **Code → Download ZIP** 下载的是整个仓库的快照，不会因为进入某个学校子目录而只下载该目录。[GitHub 下载说明](https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives)
+
+### 只下载一所学校（推荐，无需 Git）
+
+打开 [Releases 发布页](https://github.com/lbsun1999/web-slide/releases)，选择版本，在 **Assets** 中下载对应学校的独立 ZIP：
+
+| 所需模板 | 独立下载 |
+| --- | --- |
+| 北京科技大学 | [web-slide-ustb.zip](https://github.com/lbsun1999/web-slide/releases/latest/download/web-slide-ustb.zip) |
+| 辽宁工程技术大学 | [web-slide-lntu.zip](https://github.com/lbsun1999/web-slide/releases/latest/download/web-slide-lntu.zip) |
+
+解压后进入对应学校目录，打开 `template.html` 即可。每个独立包包含该校的 HTML、PDF、预览图、README、SKILL、素材和工具，可单独安装使用。**Assets 中的 `Source code (zip)` / `Source code (tar.gz)` 仍是整个仓库，不是单校包。**
+
+发布包是发布时的快照，可能晚于 `main` 分支的最新修改；想获取最新提交，请使用下面的整仓下载或 Git 方法。
+
+### 下载全部学校（无需 Git）
+
+在仓库首页点击 **Code → Download ZIP**，或点击 [下载 main 分支完整 ZIP](https://github.com/lbsun1999/web-slide/archive/refs/heads/main.zip)。解压后保留需要的学校目录即可，另一套可以删除；两套模板没有跨目录依赖。
+
+### 用 Git 只获取一个学校目录
+
+已安装较新版本 Git 时，可使用部分克隆与稀疏检出。以下示例只检出辽工大模板：
+
+```powershell
+git clone --depth 1 --filter=blob:none --sparse https://github.com/lbsun1999/web-slide.git web-slide-lntu-only
+cd web-slide-lntu-only
+git sparse-checkout set web-slide-lntu
+```
+
+北科大用户将命令中的 `web-slide-lntu-only` 改为 `web-slide-ustb-only`，将 `web-slide-lntu` 改为 `web-slide-ustb`。此方式保留 Git 元数据及根目录说明文件，按需获取选中学校的文件内容；不是完全不接触仓库元数据。后续在克隆目录执行 `git pull --ff-only` 获取更新，更新前先保存自己的改动。[Git 部分克隆说明](https://git-scm.com/docs/git-clone)、[稀疏检出说明](https://git-scm.com/docs/git-sparse-checkout)
+
+不要只下载源 `template.html` 而漏掉 `assets/` 等配套资源；“保存HTML”生成的成品文件才可独立分享。
 
 ## 浏览与放映
 
