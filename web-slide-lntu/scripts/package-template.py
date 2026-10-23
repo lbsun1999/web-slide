@@ -6,7 +6,7 @@ import zipfile
 
 def main():
     root = Path(__file__).resolve().parents[1]
-    required = ['README.md', 'template.html', 'template.pdf', '安装Skill.cmd', '导出PDF.cmd', '新国标参考文献要求.md']
+    required = ['README.md', 'preview.png', 'template.html', 'template.pdf', '安装Skill.cmd', '导出PDF.cmd', '新国标参考文献要求.md']
     entry = root / 'SKILL.md'
     if not entry.is_file():
         entry = root / 'skill.md'
