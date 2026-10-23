@@ -22,7 +22,7 @@
 
 ### 只下载一所学校（推荐，无需 Git）
 
-打开 [Releases 发布页](https://github.com/lbsun1999/web-slide/releases)，选择版本，在 **Assets** 中下载对应学校的独立 ZIP：
+打开 [**各学校独立模板包**](https://github.com/lbsun1999/web-slide/releases)，选择版本，在 **Assets** 中下载对应学校的独立 ZIP：
 
 | 所需模板 | 独立下载 |
 | --- | --- |
