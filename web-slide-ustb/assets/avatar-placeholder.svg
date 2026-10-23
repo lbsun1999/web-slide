@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="196" height="220" viewBox="0 0 196 220" role="img" aria-labelledby="title desc">
+  <title id="title">作者照片占位</title>
+  <desc id="desc">浅蓝底的通用人物轮廓，不对应任何真实人物，可替换为作者照片。</desc>
+  <rect x="1" y="1" width="194" height="218" rx="6" fill="#e4eef5" stroke="#c6d9e6" stroke-width="2"/>
+  <circle cx="98" cy="74" r="35" fill="#8aafc6"/>
+  <path d="M35 177c0-38 25-64 63-64s63 26 63 64" fill="#8aafc6"/>
+  <path d="M68 118l30 25 30-25" fill="none" stroke="#e4eef5" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M98 144v33" fill="none" stroke="#e4eef5" stroke-width="4"/>
+  <text x="98" y="201" text-anchor="middle" fill="#40647d" font-size="14" font-family="Microsoft YaHei,Arial,sans-serif">作者照片占位</text>
+</svg>

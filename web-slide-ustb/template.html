@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="--toolbar-offset: 108px;"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="北京科技大学科研汇报 HTML 模板：20 页可复用版式，1600×900，含公式、表格、伪代码和图片页。">
+<title>北京科技大学 · 科研汇报模板</title>
+<style>
+/* 北京科技大学科研汇报模板 v5.0
+   固定画布 1600×900。所有字号均为画布 CSS px，预览统一缩放。
+   标准色及渐变端点取自本目录《北京科技大学颜色主题规范》A3-01、A3-04。
+   封面与尾页共用全部尺寸；正文首句在 slide-content 内，位于标题分割线下方。
+   页序：封面 → 00 整体规范 → 目录 → 01–04（过渡页 + 本章全部正文）→ 附录 → 结束。 */
+* { box-sizing: border-box; }
+:root {
+  --ustb-blue: #005b94;
+  --ustb-blue-mid: #1766a9;
+  --ustb-cyan: #2ba3c0;
+  --ustb-red: #a31418;
+  --ustb-gray: #bcbec0;
+  --ink: #12374e;
+  --muted: #526b7d;
+  --line: #cfdde6;
+  --line-light: #e4ebf0;
+  --tint: #eef5f9;
+  --bg: #e7edf2;
+  /* 先选常用 PPT 整数 pt，再精确反算画布 px；预览缩放不改变字号档位。 */
+  --ppt-width-pt: 960;
+  --ppt-pt-px: calc(1600px / var(--ppt-width-pt));
+  --fs-cover-title: calc(var(--ppt-pt-px) * 40);
+  --cover-tracking: 4px;
+  --fs-h2: calc(var(--ppt-pt-px) * 28);
+  --fs-group: calc(var(--ppt-pt-px) * 20);
+  --fs-h3: calc(var(--ppt-pt-px) * 18);
+  --fs-item-title: calc(var(--ppt-pt-px) * 18);
+  --fs-equation: calc(var(--ppt-pt-px) * 16);
+  --fs-body: calc(var(--ppt-pt-px) * 16);
+  --fs-lead: calc(var(--ppt-pt-px) * 16);
+  --fs-label: calc(var(--ppt-pt-px) * 14);
+  --fs-small: calc(var(--ppt-pt-px) * 12);
+  --fs-caption: calc(var(--ppt-pt-px) * 12);
+  --fs-figure-title: calc(var(--ppt-pt-px) * 14);
+  --fs-footer: 17px; /* PPT 10pt ÷ 0.6，按用户要求四舍五入到整数 px。 */
+  --fs-footnote: 17px;
+  --bullet-size: 6px;
+  --bullet-gap: 24px; /* 标准宽屏 PPT 中约 0.5cm，指符号右缘至文字左缘。 */
+  --page-margin: 58px;
+  --header-height: 168px;
+  --header-rule: 2px;
+  --top-trim: 7px;
+  --logo-size: 120px;
+  --scale: 1;
+}
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif; }
+a { color:var(--ustb-blue); text-decoration:none; }
+button, select { font:inherit; cursor:pointer; }
+button:focus-visible, a:focus-visible, select:focus-visible { outline:3px solid #c98924; outline-offset:3px; }
+.toolbar { position:fixed; inset:0 0 auto; min-height:62px; z-index:100; display:flex; flex-wrap:wrap; align-items:center; align-content:center; gap:8px; padding:10px 20px; background:#12374e; color:white; }
+.brand { margin-right:auto; font-size:15px; font-weight:700; white-space:nowrap; }
+.brand span { display:block; margin-top:3px; font-size:11px; font-weight:400; color:#bdd4e2; }
+.toolbar button { border:1px solid #658293; background:transparent; color:white; border-radius:4px; padding:7px 9px; font-size:12px; white-space:nowrap; }
+.toolbar button:hover, .toolbar button.active { background:#eef5f9; color:var(--ink); }
+.toolbar label { display:inline-flex; align-items:center; gap:6px; font-size:12px; white-space:nowrap; }
+.toolbar select { max-width:120px; padding:6px 8px; border:1px solid #658293; border-radius:4px; background:#12374e; color:white; font-size:12px; }
+.toolbar select option { background:white; color:var(--ink); }
+.toolbar [hidden] { display:none!important; }
+.text-tools { display:inline-flex; align-items:center; gap:6px; }
+.toolbar button:disabled { opacity:.45; cursor:default; }
+.count { font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.sidebar { position:fixed; inset:62px auto 0 0; width:224px; z-index:60; overflow:auto; padding:17px 11px; background:#f9fbfc; border-right:1px solid var(--line); }
+.side-label { padding:10px 9px 5px; font-size:11px; color:var(--muted); letter-spacing:1px; }
+.nav-link { display:flex; gap:10px; padding:8px 9px; margin:2px 0; border-radius:4px; font-size:12px; color:var(--ink); line-height:1.5; }
+.nav-link b { color:#6d899a; font-weight:500; min-width:22px; }
+.nav-link.current { background:#e2eef5; color:var(--ustb-blue); font-weight:600; }
+.nav-link:hover { background:#edf3f6; }
+main { margin-left:224px; padding:86px 26px 40px; }
+.page { max-width:1600px; margin:0 auto 30px; scroll-margin-top:var(--toolbar-offset,82px); }
+.page-bar { display:flex; align-items:center; gap:10px; margin-bottom:9px; color:var(--muted); font-size:12px; }
+.page-id { background:var(--ustb-blue); color:white; padding:3px 8px; border-radius:3px; }
+.page-bar .right { margin-left:auto; font-size:11px; }
+.frame { position:relative; width:100%; height:calc(900px * var(--scale)); overflow:hidden; background:white; box-shadow:0 7px 22px #203a561a; }
+.slide { position:relative; width:1600px; height:900px; overflow:hidden; background:white; transform:scale(var(--scale)); transform-origin:top left; font-size:var(--fs-body); line-height:1.55; }
+.slide::before { content:""; position:absolute; inset:0 0 auto; height:var(--top-trim); background:linear-gradient(90deg,var(--ustb-blue) 0 68%,var(--ustb-blue-mid) 68% 88%,var(--ustb-cyan) 88%); }
+
+/* 正文母版：标题与校徽互相留位，分割线位于标题区底部。 */
+.slide-header { position:relative; height:var(--header-height); padding:34px 208px 20px var(--page-margin); }
+.slide-header::after { content:""; position:absolute; left:var(--page-margin); right:var(--page-margin); bottom:0; height:var(--header-rule); background:var(--ustb-blue); }
+.section-line { display:flex; align-items:center; gap:14px; height:30px; font-size:var(--fs-label); font-weight:600; color:#40647d; }
+.section-index { display:inline-flex; align-items:center; justify-content:center; width:38px; height:30px; border-radius:4px; background:#e4eef5; color:var(--ustb-blue); font-size:var(--fs-caption); font-family:Arial,sans-serif; }
+.appendix-index { width:auto; min-width:58px; padding:0 10px; font-family:inherit; white-space:nowrap; }
+.slide-header h2 { font-size:var(--fs-h2); line-height:1.22; font-weight:700; margin:16px 0 0; letter-spacing:.5px; }
+.slide-logo { position:absolute; top:calc((var(--header-height) + var(--top-trim) - var(--header-rule) - var(--logo-size)) / 2); right:var(--page-margin); width:var(--logo-size); height:var(--logo-size); object-fit:contain; }
+.slide-content { position:absolute; top:192px; left:var(--page-margin); right:var(--page-margin); bottom:90px; display:flex; flex-direction:column; gap:22px; min-width:0; min-height:0; }
+.lead { flex:none; margin:0; font-size:var(--fs-lead); line-height:1.55; color:var(--ink); }
+.slide-footer { position:absolute; bottom:16px; left:var(--page-margin); right:var(--page-margin); height:50px; display:grid; grid-template-columns:300px minmax(0,1fr) auto; align-items:center; gap:24px; border-top:1px solid var(--line-light); padding-top:8px; font-size:var(--fs-footer); line-height:1.4; color:#617b8b; }
+.slide-footer b { color:var(--ustb-blue); font-weight:600; }
+.slide-footer > span { min-width:0; }
+.footer-source { text-align:right; line-height:1.35; overflow-wrap:anywhere; }
+.footer-pagination { white-space:nowrap; font-variant-numeric:tabular-nums; }
+
+/* 内容容器按剩余高度分配，图注、结论和页脚都有独立空间。 */
+.layout { flex:1; min-width:0; min-height:0; }
+.two-col { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:36px; }
+.wide-left { grid-template-columns:minmax(0,1.65fr) minmax(0,1fr); }
+.wide-right { grid-template-columns:minmax(0,1fr) minmax(0,1.65fr); }
+.stack { display:flex; flex-direction:column; gap:24px; min-width:0; min-height:0; }
+.stack.spread { justify-content:space-between; }
+.stack.balanced { justify-content:space-between; gap:18px; }
+.balanced .text-block + .text-block { padding-top:14px; }
+.compact-prose .body-copy, .compact-prose .points { font-size:var(--fs-body); line-height:1.55; }
+.compact-prose .points li + li { margin-top:10px; }
+.text-block { min-width:0; }
+.text-block + .text-block { border-top:1px solid var(--line-light); padding-top:22px; }
+.text-block.soft-block { padding:16px 20px; border:1px solid #dfebf3; border-radius:6px; background:#f1f7fb; }
+.soft-block .points { font-size:var(--fs-label); line-height:1.55; }
+h3 { margin:0 0 12px; font-size:var(--fs-h3); line-height:1.35; color:var(--ustb-blue); font-weight:700; }
+.group-title { margin:0 0 18px; font-size:var(--fs-group); line-height:1.3; font-weight:700; }
+.item-title { margin:0 0 8px; font-size:var(--fs-item-title); line-height:1.35; color:var(--ustb-blue); font-weight:700; }
+p { margin:0; }
+.body-copy { font-size:var(--fs-body); line-height:1.6; overflow-wrap:anywhere; }
+.muted { color:var(--muted); }
+.small { font-size:var(--fs-small); line-height:1.6; }
+.source { flex:none; margin:0; font-size:var(--fs-footnote); line-height:1.5; color:var(--muted); overflow-wrap:anywhere; }
+.points { margin:0; padding:0; list-style:none; font-size:var(--fs-body); line-height:1.6; }
+.points > li { position:relative; padding-left:calc(var(--bullet-size) + var(--bullet-gap)); }
+.points > li + li { margin-top:12px; }
+.points > li::before { content:""; position:absolute; left:0; top:calc(.8em - var(--bullet-size) / 2); width:var(--bullet-size); height:var(--bullet-size); border-radius:50%; background:var(--ustb-blue); }
+.takeaway { flex:none; border-left:4px solid var(--ustb-blue); background:var(--tint); padding:14px 20px; font-size:var(--fs-body); font-weight:600; line-height:1.5; }
+.inset { background:#f5f9fc; border:1px solid var(--line); padding:26px 28px; min-width:0; min-height:0; }
+.ruled { border-left:1px solid var(--line); padding-left:34px; }
+
+/* 封面 / 尾页：同一套样式，不设置尾页字号或条带高度覆盖。 */
+.cover { display:flex; flex-direction:column; }
+.cover::before { display:none; }
+.cover-top { flex:0 0 235px; display:flex; align-items:center; justify-content:center; }
+.cover-top img { display:block; height:120px; width:auto; max-width:1300px; object-fit:contain; }
+.cover-band { flex:0 0 330px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:22px; padding:30px 90px; text-align:center; background:linear-gradient(115deg,var(--ustb-blue) 0%,var(--ustb-blue-mid) 52%,var(--ustb-cyan) 100%); color:white; }
+.cover-band h1 { margin:0; font-size:var(--fs-cover-title); line-height:1.3; font-weight:700; letter-spacing:var(--cover-tracking); }
+.cover-band p { color:#e4f1f8; font-size:var(--fs-label); line-height:1.5; letter-spacing:2px; }
+.cover-bottom { flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:24px 90px; }
+.cover-info { width:auto; max-width:1300px; border-collapse:separate; border-spacing:28px 12px; table-layout:auto; font-size:var(--fs-body); line-height:1.45; }
+.cover-info th, .cover-info td { padding:0; border:0; vertical-align:baseline; }
+.cover-info th { width:112px; min-width:112px; font-weight:400; color:#416279; }
+.cover-info th span { display:block; width:112px; text-align:justify; text-align-last:justify; text-justify:inter-ideograph; }
+.cover-info td { text-align:left; font-size:var(--fs-h3); font-weight:600; color:var(--ink); }
+
+/* 目录与章节过渡 */
+.toc { display:grid; grid-template-columns:1fr; grid-template-rows:repeat(4,minmax(0,1fr)); }
+.toc-item { display:grid; grid-template-columns:84px 340px minmax(0,1fr); gap:26px; align-items:center; padding:20px 0; border-bottom:1px solid var(--line); }
+.toc-item strong { font-size:calc(var(--ppt-pt-px) * 36); line-height:1; color:#8cb2ca; font-weight:400; font-family:Arial,sans-serif; }
+.toc-item h3 { margin-bottom:6px; }
+.toc-item p { font-size:var(--fs-caption); color:var(--muted); }
+.toc-item .toc-detail { margin:0; font-size:var(--fs-body); line-height:1.6; color:var(--ink); }
+.chapter-transition { display:flex; align-items:center; justify-content:center; text-align:center; background:#eef5f9; }
+.chapter-transition-inner { max-width:1340px; }
+.chapter-num { font-size:calc(var(--ppt-pt-px) * 96); line-height:1; font-weight:700; font-family:Arial,sans-serif; color:var(--ustb-blue); letter-spacing:8px; }
+.chapter-divider { width:120px; height:4px; background:var(--ustb-blue); margin:30px auto; }
+.chapter-title { margin:0; font-size:var(--fs-cover-title); line-height:1.3; }
+.chapter-subtitle { margin-top:18px; font-size:var(--fs-h3); color:var(--muted); letter-spacing:2px; }
+
+/* 四阶段图文时间轴：图片统一裁切为同宽同高；图像不拉伸，原始资产保持不变。 */
+.history-slide .lead { text-align:justify; text-align-last:left; }
+.history-timeline { position:relative; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:minmax(0,1fr) 58px; gap:16px 16px; padding:0 32px; }
+.history-timeline::before { content:""; position:absolute; left:0; right:0; bottom:0; height:58px; background:#e3edf3; clip-path:polygon(0 0,97.5% 0,100% 50%,97.5% 100%,0 100%); }
+.history-stage { position:relative; display:flex; flex-direction:column; gap:16px; min-width:0; min-height:0; background:#f1f7fb; }
+.history-stage::before { content:""; position:absolute; left:-1px; top:0; bottom:0; width:2px; background:var(--stage-color); }
+.history-track { grid-column:1 / -1; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; position:relative; }
+.history-marker { position:relative; display:flex; align-items:center; min-width:0; padding:0 12px 0 20px; }
+.history-marker::before { content:""; position:absolute; left:-1px; top:-16px; width:2px; height:45px; background:var(--stage-color); }
+.history-dot { position:absolute; left:-8px; top:21px; width:16px; height:16px; border:3px solid white; border-radius:50%; background:var(--stage-color); box-shadow:0 0 0 2px var(--stage-color); }
+.history-heading { flex:none; margin:0; padding:6px 16px; background:var(--stage-color); color:white; }
+.history-year { display:block; font-size:calc(var(--ppt-pt-px) * 24); font-weight:700; line-height:1.15; font-variant-numeric:tabular-nums; }
+.history-title { position:relative; margin:0; font-size:var(--fs-h3); color:var(--ink); font-weight:700; line-height:1.25; }
+.history-image { display:block; flex:none; width:calc(100% - 32px); margin:0 16px; height:148px; object-fit:cover; object-position:var(--image-position,center); }
+.history-copy { flex:1; margin:0; padding:10px 16px; border-bottom:3px solid var(--stage-color); font-size:var(--fs-label); line-height:1.5; text-align:justify; text-align-last:left; }
+
+/* 表格：原生文本，单位在表头，数值等宽。 */
+.data-table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:var(--fs-caption); line-height:1.45; }
+.data-table th, .data-table td { padding:16px 20px; text-align:left; vertical-align:middle; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
+.data-table thead { color:white; background:var(--ustb-blue); }
+.data-table th { font-weight:600; }
+.data-table a, .bibliography-table a, .reference-link { white-space:normal; overflow-wrap:anywhere; word-break:normal; }
+.data-table tbody tr:nth-child(even) { background:#f4f8fb; }
+.data-table .numeric { text-align:right; font-variant-numeric:tabular-nums; }
+.data-table tr.highlight { background:#e9f3f9; font-weight:600; color:var(--ustb-blue); }
+.data-table.compact { font-size:var(--fs-caption); }
+.data-table.compact th, .data-table.compact td { padding:12px 18px; }
+.data-table.font-table { font-size:var(--fs-caption); line-height:1.4; }
+.data-table.font-table th, .data-table.font-table td { padding:11px 14px; }
+.font-table .canvas-size, .font-table .ppt-size { white-space:nowrap; font-variant-numeric:tabular-nums; }
+.type-guide { gap:20px; }
+.type-guide .unit-note { margin-top:auto; }
+.type-guide + .stack { gap:20px; }
+.type-guide + .stack > .small:last-child { margin-top:auto; }
+.unit-note { flex:none; font-size:var(--fs-caption); line-height:1.55; color:var(--muted); }
+.unit-note h3 { margin-bottom:8px; }
+.unit-note p + p { margin-top:6px; }
+.data-table.roomy th, .data-table.roomy td { padding:21px 20px; }
+.data-table.plan-table { height:auto; font-size:var(--fs-label); line-height:1.45; }
+.data-table.plan-table th, .data-table.plan-table td { padding:8px 12px; }
+.comparison-layout { display:flex; flex-direction:column; gap:16px; }
+.table-baseline { flex:none; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:10px 16px; background:#eef5f9; font-size:var(--fs-caption); line-height:1.5; }
+.comparison-wrap { flex:1; min-width:0; min-height:0; }
+.adaptive-table { --table-font:20px; --cell-pad-y:10px; --cell-pad-x:.5em; --table-line-height:1.4; height:100%; font-size:var(--table-font); line-height:var(--table-line-height); }
+.adaptive-table th, .adaptive-table td { padding:var(--cell-pad-y) var(--cell-pad-x); }
+.adaptive-table thead th { text-align:center; }
+.adaptive-table thead tr:first-child th { border-right:1px solid #ffffff55; border-bottom:1px solid #ffffff55; }
+.adaptive-table thead tr:nth-child(2) th { background:var(--ustb-blue-mid); color:white; border-right:1px solid #ffffff55; }
+.adaptive-table thead tr:first-child th:not(:last-child), .adaptive-table thead tr:nth-child(2) th:nth-child(3n):not(:last-child) { border-right:1px solid white; }
+.adaptive-table tbody tr > :nth-child(3n+1):not(:last-child) { border-right:1px solid black; }
+.adaptive-table td { text-align:center; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.adaptive-table tbody th { text-align:left; }
+.comparison-note { flex:none; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:96px; padding:0 24px; margin-top:8px; font-size:var(--fs-caption); line-height:1.5; color:var(--muted); }
+.comparison-note-block { min-width:0; }
+.comparison-note h3 { margin:0 0 8px; font-size:var(--fs-label); line-height:1.3; font-weight:700; }
+.comparison-note .points { font-size:var(--fs-caption); line-height:1.5; }
+.comparison-note .points > li + li { margin-top:8px; }
+.font-sample { font-size:var(--fs-group); font-weight:700; line-height:1.35; color:var(--ink); }
+.font-sample-notes { margin-top:14px; font-size:var(--fs-label); line-height:1.55; font-weight:400; color:var(--muted); }
+.font-sample-notes > li + li { margin-top:6px; }
+.swatches { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; }
+.palette-layout { display:grid; grid-template-rows:244px 164px minmax(0,1fr); gap:24px; }
+.swatch { min-width:0; padding:22px 26px; color:white; background:var(--swatch); }
+.swatch.light { color:var(--ink); }
+.swatch h3 { color:inherit; font-size:var(--fs-group); margin:0 0 9px; }
+.swatch .swatch-meta { margin:0 0 14px; font:var(--fs-caption)/1.55 Consolas,Arial,sans-serif; }
+.swatch .swatch-description { font-size:var(--fs-label); line-height:1.55; }
+.contrast-example { padding:20px 26px; }
+.contrast-example.dark { color:white; background:#005b94; }
+.contrast-example.light { color:var(--ink); background:#e1edf4; }
+.contrast-example h3 { color:inherit; font-size:var(--fs-h3); margin-bottom:10px; }
+.contrast-example p { font-size:var(--fs-label); line-height:1.55; }
+.gradient-sample { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; color:white; font:600 var(--fs-caption)/1.4 Consolas,Arial,sans-serif; background:linear-gradient(90deg,#005b94,#1766a9,#2ba3c0); margin-bottom:8px; }
+.gradient-sample span:last-child { color:var(--ink); }
+.gradient-caption { font-size:var(--fs-caption); line-height:1.5; color:var(--muted); }
+
+/* 每式仅一个 Cambria Math 轮廓 SVG。保留 LaTeX 供构建脚本重绘，不运行双重渲染。 */
+.formula-sheet { display:grid; grid-template-rows:1.1fr 1fr; gap:20px; min-width:0; min-height:0; }
+.formula-card { display:flex; flex-direction:column; min-width:0; min-height:0; }
+.equation-label { flex:none; margin:0; padding:10px 22px; color:white; background:var(--ustb-blue); font-size:var(--fs-h3); line-height:1.3; font-weight:700; }
+.formula-body { flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:14px 22px 16px; border:1px solid #d9e7f1; border-top:0; background:#f1f7fb; }
+.equation-explanation { margin:0; font-size:var(--fs-body); line-height:1.5; color:var(--ink); }
+.equation-row { display:grid; grid-template-columns:minmax(0,1fr) 48px; align-items:center; gap:16px; }
+.equation-number { font-size:var(--fs-caption); text-align:right; color:var(--muted); }
+.math-expression { min-width:0; text-align:center; font-size:var(--fs-equation); line-height:1.55; }
+.math-expression { padding:8px 0; }
+.formula-image { display:inline-block; max-width:100%; vertical-align:middle; object-fit:contain; }
+.math-symbol { display:inline-block; font-family:"Cambria Math",serif; font-size:var(--fs-body); line-height:1; }
+.math-symbol .formula-image { max-width:none; }
+.symbols { display:grid; grid-template-columns:88px minmax(0,1fr); gap:8px 18px; margin:0; font-size:var(--fs-caption); line-height:1.4; }
+.symbols dt { color:var(--ustb-blue); font-family:"Cambria Math",serif; font-size:var(--fs-body); line-height:1.1; }
+.symbols dd { margin:0; color:var(--muted); }
+var { font-family:"Cambria Math","Times New Roman",serif; font-style:italic; font-weight:400; }
+.symbols sub { font-size:.72em; line-height:0; vertical-align:-.25em; }
+.symbols-panel { gap:12px; }
+.symbols-panel > .group-title { margin-bottom:0; }
+.symbol-note { margin-top:auto; padding:14px 18px; background:#f1f7fb; border:1px solid #dfebf3; font-size:var(--fs-caption); line-height:1.55; }
+.math-style-title { margin:0 0 8px; color:var(--ustb-blue); font-size:var(--fs-h3); font-weight:700; line-height:1.3; }
+.math-style-list { display:grid; grid-template-columns:98px minmax(0,1fr); gap:8px 12px; margin:0; line-height:1.4; }
+.math-style-list dt { font-weight:600; }
+.math-style-list dd { display:grid; grid-template-columns:104px minmax(0,1fr); align-items:center; gap:8px; margin:0; }
+.math-style-list .math-symbol { font-size:var(--fs-label); }
+.math-style-foot { margin-top:10px; font-size:var(--fs-caption); line-height:1.4; }
+
+/* 伪代码：真实有序列表与缩进，长算法拆页，不靠滚动查看。 */
+.algorithm { min-width:0; min-height:0; padding:24px 28px; border-top:3px solid var(--ustb-blue); border-bottom:1px solid var(--line); background:#f6f9fb; }
+.algorithm-title { display:flex; gap:20px; align-items:baseline; padding-bottom:14px; margin-bottom:16px; border-bottom:1px solid var(--line); font-size:var(--fs-body); font-weight:600; }
+.algorithm-title span { color:var(--ustb-blue); font-family:Consolas,monospace; }
+.algorithm-io { font-size:var(--fs-caption); line-height:1.6; margin-bottom:12px; }
+.code-lines { padding-left:2.3em; margin:14px 0 0; font-family:Consolas,"Microsoft YaHei",monospace; font-size:var(--fs-label); line-height:1.85; }
+.code-lines li { padding-left:14px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.code-lines li::marker { color:#7b93a3; font-size:var(--fs-caption); }
+.kw { color:var(--ustb-blue); font-weight:700; }
+
+/* 图片：imgbox 分配图像空间，figcaption 单独占行，默认完整显示原图。 */
+.figure { display:flex; flex-direction:column; gap:14px; margin:0; min-width:0; min-height:0; }
+.imgbox { flex:1; display:flex; align-items:center; justify-content:center; min-width:0; min-height:0; padding:14px; border:1px solid var(--line); background:#f7fafc; }
+.imgbox img { display:block; width:100%; height:100%; object-fit:contain; }
+.figure figcaption { flex:none; font-size:var(--fs-caption); line-height:1.5; color:var(--muted); }
+.figure figcaption strong { display:block; color:var(--ustb-blue); font-size:var(--fs-figure-title); line-height:1.5; font-weight:600; }
+.figure-caption-detail { display:block; margin-top:4px; font-size:var(--fs-caption); line-height:1.5; }
+/* 单图说明按实际信息量组织，避免右栏只有顶部两段、下半栏整块空置。 */
+.image-notes { gap:20px; }
+.image-notes h3 { margin-bottom:10px; }
+.image-notes > .text-block + .text-block:not(.soft-block) { padding-top:16px; }
+.image-notes .points > li + li { margin-top:8px; }
+.image-notes > .soft-block:last-child { margin-top:auto; }
+.paired-figures { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; }
+.paired-figures .imgbox { padding:18px; }
+.summary-panel { display:flex; flex-direction:column; min-height:0; min-width:0; }
+.summary-panel > .group-title { flex:none; margin-bottom:16px; }
+.summary-list { flex:1; min-height:0; display:grid; grid-template-rows:repeat(3,minmax(0,1fr)); gap:14px; counter-reset:summary; margin:0; padding:0; list-style:none; }
+.summary-list li { counter-increment:summary; position:relative; display:flex; flex-direction:column; justify-content:center; padding:14px 18px 14px 62px; border:1px solid #dfebf3; background:#f1f7fb; border-radius:6px; }
+.summary-list li::before { content:counter(summary,decimal-leading-zero); position:absolute; top:18px; left:16px; color:#79a4bd; font:var(--fs-h3)/1.35 Arial,sans-serif; }
+.summary-list .item-title { font-size:var(--fs-item-title); margin-bottom:8px; }
+.summary-list .body-copy { font-size:var(--fs-body); line-height:1.5; }
+.plan-wrap { flex:none; min-height:auto; margin-bottom:14px; }
+.discussion-note { flex:none; margin-top:auto; padding:12px 16px; border-left:4px solid var(--ustb-blue); background:var(--tint); font-size:var(--fs-caption); line-height:1.5; }
+.reference-list { margin:0; padding-left:2em; font-size:var(--fs-label); line-height:1.6; overflow-wrap:anywhere; }
+.reference-list li { padding:0 0 24px 12px; margin-bottom:24px; border-bottom:1px solid var(--line-light); }
+.reference-list li::marker { color:var(--ustb-blue); font-weight:600; }
+.reference-list.annotated { height:100%; display:grid; grid-template-rows:repeat(3,minmax(0,1fr)); }
+.reference-list.annotated li { padding-bottom:20px; margin-bottom:20px; }
+.reference-list.annotated li:last-child { margin-bottom:0; border-bottom:0; }
+.reference-list h3 { font-size:var(--fs-body); margin-bottom:10px; }
+.reference-list .reference-use { display:block; margin-top:10px; font-size:var(--fs-caption); color:var(--muted); }
+/* 文献列表：序号左对齐，条目两端对齐、末行左对齐，均顶端对齐。链接允许内部换行；日期用 wbr 标明符号后的断点，不改原文字符。 */
+.bibliography-table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:var(--fs-caption); line-height:1.35; font-variant-numeric:tabular-nums; }
+.bibliography-table td { padding:6px 0 7px; border:0; text-align:left; vertical-align:top; overflow-wrap:break-word; }
+.bibliography-table td:first-child { width:48px; padding-right:6px; white-space:nowrap; color:var(--ustb-blue); }
+.bibliography-table td:last-child { padding-left:0; text-align:justify; text-align-last:left; text-justify:inter-word; word-break:normal; }
+.reference-token { white-space:nowrap; }
+.reference-date { white-space:normal; word-break:normal; overflow-wrap:normal; }
+.bibliography-table tr:target { background:#f1f7fb; outline:2px solid #b4cfdf; outline-offset:3px; }
+/* 作者简介：左侧身份，右侧履历与研究主题；按真实简历替换占位，不套用参考图中的人物成果。 */
+.profile-layout { display:grid; grid-template-columns:340px minmax(0,1fr); gap:32px; }
+.profile-identity { display:flex; flex-direction:column; align-items:center; gap:12px; padding:24px 20px 12px; border:1px solid #dfebf3; border-radius:6px; background:#f1f7fb; text-align:center; }
+.profile-portrait { flex:none; display:block; width:196px; height:220px; object-fit:contain; }
+.profile-identity .profile-name { margin:0; font-size:var(--fs-group); line-height:1.3; }
+.profile-role, .profile-unit { font-size:var(--fs-label); line-height:1.45; }
+.profile-contact { padding-top:12px; width:100%; border-top:1px solid var(--line); font-size:var(--fs-caption); line-height:1.45; }
+.profile-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; width:100%; margin-top:auto; padding-top:12px; border-top:1px solid var(--line); }
+.profile-metrics b { display:block; min-height:1.35em; font-size:var(--fs-group); line-height:1.35; font-weight:700; color:var(--ustb-blue); }
+.profile-metrics span { display:block; margin-top:4px; font-size:var(--fs-caption); line-height:1.4; color:var(--muted); }
+.profile-sections { display:flex; flex-direction:column; gap:16px; min-width:0; min-height:0; }
+.profile-section { flex:none; min-width:0; border:1px solid var(--line); }
+.profile-sections > .profile-section:last-child { flex:1; display:flex; flex-direction:column; }
+.profile-section > h3 { margin:0; padding:6px 16px; font-size:var(--fs-h3); line-height:1.35; color:white; background:var(--ustb-blue); }
+.data-table.profile-history { font-size:var(--fs-caption); line-height:1.45; }
+.profile-history th, .profile-history td { padding:5px 12px; border:0; text-align:center; vertical-align:top; }
+.profile-history thead { background:white; color:var(--ink); font-size:var(--fs-label); }
+.profile-history thead th { border-bottom:2px solid var(--ustb-blue); font-weight:600; }
+.profile-history tbody tr:nth-child(even) { background:transparent; }
+.profile-history col.profile-spacer-col { width:.5em; }
+.profile-history .profile-spacer { padding:0; border:0; background:transparent; }
+.profile-section-body { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; padding:12px 16px; }
+.profile-section-body > div { min-width:0; }
+.profile-section-body h4 { margin:0 0 6px; font-size:var(--fs-label); line-height:1.35; color:var(--ustb-blue); }
+.profile-section-body .points { font-size:var(--fs-caption); line-height:1.4; }
+.profile-section-body .points > li + li { margin-top:8px; }
+.profile-research { flex:1; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; background:#f7fafc; }
+.profile-research > div { display:flex; flex-direction:column; }
+.profile-research .points { margin-top:auto; }
+.footer-source a { color:inherit; text-decoration:underline; text-underline-offset:3px; }
+.reference-list li:target { background:#f1f7fb; outline:2px solid #b4cfdf; outline-offset:6px; }
+
+.notes { background:#f8fbfd; border:1px solid var(--line); border-top:0; padding:12px 18px; font-size:13px; line-height:1.8; color:var(--muted); }
+.notes summary { cursor:pointer; font-weight:600; color:var(--ustb-blue); }
+.notes p { margin-top:8px; }
+.notes-hidden .notes { display:none; }
+.edit-on [data-edit] { outline:1px dashed #70a4c3; outline-offset:3px; cursor:text; }
+.edit-on [data-edit]:focus { background:#fff6d9; outline:2px solid #c98924; }
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); max-width:90vw; padding:11px 18px; background:var(--ink); color:white; font-size:13px; line-height:1.5; border-radius:4px; z-index:200; opacity:0; pointer-events:none; }
+.toast.show { opacity:1; }
+.print-guide { width:min(520px,calc(100vw - 32px)); max-height:calc(100vh - 32px); overflow:auto; padding:26px 28px; border:1px solid var(--line); border-radius:8px; background:white; color:var(--ink); box-shadow:0 16px 60px #12374e33; font-size:15px; line-height:1.7; }
+.print-guide::backdrop { background:#12374e66; }
+.print-guide h2 { margin:0 0 8px; font-size:22px; line-height:1.4; }
+.print-guide .print-format { margin-bottom:16px; color:var(--muted); }
+.print-guide ol { margin:0; padding-left:24px; }
+.print-guide li + li { margin-top:10px; }
+.print-guide .print-settings { margin-top:5px; font-size:14px; }
+.print-guide .print-note { margin-top:18px; padding-top:14px; border-top:1px solid var(--line-light); color:var(--muted); font-size:13px; }
+.print-guide-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.print-guide button { padding:8px 16px; border:1px solid var(--line); border-radius:4px; background:white; color:var(--ink); }
+.print-guide .print-confirm { border-color:var(--ustb-blue); background:var(--ustb-blue); color:white; }
+.present main { margin:0; padding:78px 16px 16px; }
+.present .sidebar, .present .notes, .present .page-bar { display:none; }
+.present .page { display:none; margin:0 auto; }
+.present .page.selected { display:block; }
+.present .frame { box-shadow:none; }
+.grid-view main { display:grid; grid-template-columns:repeat(var(--grid-columns,2),minmax(0,1fr)); gap:24px; align-items:start; }
+.grid-view .page { width:100%; min-width:0; max-width:none; margin:0; }
+.grid-view .page-bar { gap:6px; }
+.grid-view .page-id { flex:none; }
+.grid-view .page-bar > span:nth-child(2) { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.grid-view .page-bar .right { display:none; }
+.grid-view .frame { cursor:pointer; }
+.grid-view.edit-on .frame { cursor:auto; }
+.grid-view .page.selected .frame { outline:2px solid var(--ustb-blue); outline-offset:3px; }
+@media (max-width:1100px) {
+  .sidebar { width:180px; } main { margin-left:180px; padding-left:14px; padding-right:14px; }
+  .toolbar { padding:10px 12px; gap:6px; min-height:88px; }
+  .brand { flex:1 0 100%; font-size:13px; } .brand span { display:none; }
+  .toolbar button { padding:5px 7px; font-size:11px; }
+  .sidebar { top:88px; } main { padding-top:110px; }
+  .present main { padding-top:104px; }
+}
+@media (max-width:720px) {
+  .toolbar { min-height:88px; padding:8px; }
+  .sidebar { display:none; } main { margin-left:0; padding:124px 8px 24px; }
+  .count { margin-right:auto; } .brand { font-size:12px; }
+  .grid-view main { gap:16px 12px; }
+}
+/* 独立放映层：隐藏全部编辑 UI，画布在可用屏幕内完整等比居中。 */
+body.show-on { background:#071c2c; overflow:hidden; }
+.show-on .toolbar, .show-on .sidebar, .show-on .notes, .show-on .page-bar { display:none; }
+.show-on main { margin:0; padding:0!important; width:100%; height:100dvh; }
+.show-on.present main { display:flex; align-items:center; justify-content:center; }
+.show-on.present .page { width:100%; max-width:none; margin:0; }
+.show-on .frame { box-shadow:none; }
+.show-on.present .frame { overflow:visible; transform:translate(var(--show-pan-x,0px),var(--show-pan-y,0px)) scale(var(--show-zoom,1)); transform-origin:center; touch-action:none; }
+.show-on.show-zoomed.present main { cursor:grab; user-select:none; }
+.show-on.show-dragging.present main { cursor:grabbing; }
+body.show-on.show-overview { overflow:auto; }
+.show-on.show-overview main { height:auto; min-height:100dvh; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; padding:32px!important; align-content:start; }
+.show-on.show-overview .page-bar { display:flex; color:#d4e5ef; }
+.show-on.show-overview .page.selected .frame { outline:3px solid #63c4df; outline-offset:4px; }
+.show-on.show-overview .frame { cursor:zoom-in; }
+@media print {
+  /* 画布整体等比缩放到 960×540pt。系统打印仍可能套用 A4；精确 PDF 使用配套导出工具。 */
+  @page { size:960pt 540pt; margin:0; }
+  html, body { margin:0; padding:0; background:white; overflow:visible!important; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+  .toolbar, .sidebar, .page-bar, .notes, .toast, .print-guide { display:none!important; }
+  .print-guide::backdrop { display:none!important; }
+  .edit-on [data-edit] { outline:none!important; }
+  main, .present main, .grid-view main { display:block!important; height:auto!important; min-height:0!important; margin:0; padding:0!important; }
+  .page, .present .page { display:block!important; width:1280px; height:720px; max-width:none; margin:0; break-after:page; break-inside:avoid; }
+  .page:last-child { break-after:auto; }
+  .frame { width:1280px!important; height:720px!important; box-shadow:none; margin:0!important; outline:none!important; transform:none!important; }
+  .slide { transform:scale(.8)!important; }
+  .slide, .slide * { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+}
+</style>
+</head>
+<body data-scroll-view="scroll" data-grid-columns="2" class="notes-hidden">
+<div class="toolbar" role="toolbar" aria-label="演示工具">
+  <div class="brand">北科 · 科研汇报模板<span data-deck-summary="">20 页版式参考 · 1600 × 900</span></div>
+  <span class="count" id="count" aria-live="polite">02 / 20</span>
+  <button type="button" data-action="prev" aria-label="上一页">←</button>
+  <button type="button" data-action="next" aria-label="下一页">→</button>
+  <label for="view-mode">视图<select id="view-mode"><option value="scroll" selected="">单列滚动</option><option value="grid">多页滚动</option><option value="present">单页展示</option></select></label>
+  <label for="grid-columns" id="grid-control" hidden="">每行<select id="grid-columns"><option value="1">1 页</option><option value="2" selected="">2 页</option><option value="3">3 页</option><option value="4">4 页</option><option value="5">5 页</option><option value="6">6 页</option></select></label>
+  <button type="button" data-action="notes" id="notes-btn" aria-pressed="false">演讲备注</button>
+  <button type="button" data-action="edit" id="edit-btn" aria-pressed="false">编辑文字</button>
+  <span class="text-tools" id="text-tools" role="group" aria-label="选中文字格式" hidden="">
+    <button type="button" data-format="bold" id="text-bold" aria-label="加粗或取消加粗" aria-pressed="false" title="选中文字后切换加粗；也可按 Ctrl+B" disabled=""><b>加粗</b></button>
+    <label for="text-color">颜色<select id="text-color" aria-label="选中文字颜色" disabled=""><option value="" disabled="" hidden="">混合颜色</option><option value="original" selected="">恢复原色</option><option value="blue">科技蓝</option><option value="red">钢铁红</option></select></label>
+  </span>
+  <button type="button" data-action="slideshow" title="方向键或滚轮翻页；Ctrl＋滚轮缩放；放大后左键拖动；Esc 先恢复大小，再退出；双击四列预览">全屏放映</button>
+  <button type="button" data-action="copy">复制本页</button>
+  <button type="button" data-action="audit">检查排版</button>
+  <button type="button" data-action="save">保存HTML</button>
+  <button type="button" data-action="print" title="精确 16:9 PDF 请用同目录的“导出PDF.cmd”；此处查看导出与纸张打印说明">PDF / 打印</button>
+</div>
+<nav class="sidebar" aria-label="页面目录" style="top: 88px;"><div class="side-label">封面</div><a class="nav-link" href="#p01" data-page="1"><b>01</b><span>封面</span></a><div class="side-label">00 整体规范</div><a class="nav-link current" href="#p02" data-page="2" aria-current="page"><b>02</b><span>字号与留白</span></a><a class="nav-link" href="#p03" data-page="3"><b>03</b><span>官方色彩与应用</span></a><div class="side-label">汇报目录</div><a class="nav-link" href="#p04" data-page="4"><b>04</b><span>汇报目录</span></a><div class="side-label">01 研究背景</div><a class="nav-link" href="#p05" data-page="5"><b>05</b><span>研究背景 · 章节过渡</span></a><a class="nav-link" href="#p06" data-page="6"><b>06</b><span>双栏正文</span></a><a class="nav-link" href="#p07" data-page="7"><b>07</b><span>研究现状分析</span></a><div class="side-label">02 研究方法</div><a class="nav-link" href="#p08" data-page="8"><b>08</b><span>研究方法 · 章节过渡</span></a><a class="nav-link" href="#p09" data-page="9"><b>09</b><span>公式与符号说明</span></a><a class="nav-link" href="#p10" data-page="10"><b>10</b><span>算法伪代码</span></a><div class="side-label">03 实验与分析</div><a class="nav-link" href="#p11" data-page="11"><b>11</b><span>实验与分析 · 章节过渡</span></a><a class="nav-link" href="#p12" data-page="12"><b>12</b><span>实验结果表格</span></a><a class="nav-link" href="#p13" data-page="13"><b>13</b><span>单图与说明</span></a><a class="nav-link" href="#p14" data-page="14"><b>14</b><span>双图对照</span></a><div class="side-label">04 总结与计划</div><a class="nav-link" href="#p15" data-page="15"><b>15</b><span>总结与计划 · 章节过渡</span></a><a class="nav-link" href="#p16" data-page="16"><b>16</b><span>总结与后续计划</span></a><div class="side-label">附录</div><a class="nav-link" href="#p17" data-page="17"><b>17</b><span>模板资料来源</span></a><a class="nav-link" href="#p18" data-page="18"><b>18</b><span>参考文献著录示例</span></a><a class="nav-link" href="#p19" data-page="19"><b>19</b><span>作者简介</span></a><div class="side-label">结束</div><a class="nav-link" href="#p20" data-page="20"><b>20</b><span>结束页</span></a></nav>
+<main style="--grid-columns: 2; padding-top: 112px;">
+
+<!-- P01 封面。复制为实际汇报时，更换主题与汇报信息。 -->
+<article class="page" data-page="1" data-label="封面" data-group="封面" id="p01">
+  <div class="page-bar"><span class="page-id">P01</span><span>封面</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide cover" aria-label="封面">
+    <div class="cover-top"><img src="assets/logo-full.svg" alt="北京科技大学校徽与中英文校名"></div>
+    <div class="cover-band">
+      <h1 data-edit="">北京科技大学<br>科研汇报模板与版式示例</h1>
+      <p data-edit="">组会汇报 · 研究进展 · 学术交流</p>
+    </div>
+    <div class="cover-bottom">
+      <table class="cover-info" aria-label="汇报信息"><tbody>
+        <tr><th scope="row"><span data-edit="">汇报人</span></th><td data-edit="">请填写姓名</td></tr>
+        <tr><th scope="row"><span data-edit="">导师</span></th><td data-edit="">请填写导师</td></tr>
+        <tr><th scope="row"><span data-edit="">学院</span></th><td data-edit="">请填写学院或实验室</td></tr>
+        <tr><th scope="row"><span data-edit="">汇报日期</span></th><td data-edit="">请填写汇报日期</td></tr>
+      </tbody></table>
+    </div>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>标题建议一至两行。封面与尾页标题均为 PPT 40pt（画布约 67px），条带均为 330px，横版标志高度均为 120px。说明文字与汇报信息按实际需要填写。</p></details>
+</article>
+
+<!-- P02 字体层级。正文页统一使用同一套母版。 -->
+<article class="page" data-page="2" data-label="字号与留白" data-group="00 整体规范" id="p02">
+  <div class="page-bar"><span class="page-id">P02</span><span>字号与留白</span><span class="right">16:9</span></div>
+  <div class="frame"><section class="slide">
+    <header class="slide-header">
+      <div class="section-line"><span class="section-index" data-edit>00</span><span data-edit>整体规范</span></div>
+      <h2 data-edit>字号与留白</h2>
+      <img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽">
+    </header>
+    <div class="slide-content">
+      <p class="lead" data-edit>正文从分割线下方开始，首句直接说明本页主题，与后续内容保持同一阅读顺序。</p>
+      <div class="layout two-col wide-left">
+        <div class="stack type-guide">
+          <table class="data-table font-table" aria-label="字体层级规范">
+            <colgroup><col style="width:29%"><col style="width:21%"><col style="width:23%"><col></colgroup>
+            <thead><tr><th scope="col">文字层级</th><th scope="col">画布 px ≈</th><th scope="col">PPT pt ≈</th><th scope="col">使用范围</th></tr></thead>
+            <tbody>
+              <tr data-type-tokens="--fs-cover-title"><td>封面 / 尾页</td><td class="canvas-size">67</td><td class="ppt-size">40</td><td>主标题保持一致</td></tr>
+              <tr data-type-tokens="--fs-h2"><td>正文页标题</td><td class="canvas-size">47</td><td class="ppt-size">28</td><td>优先保持一行</td></tr>
+              <tr data-type-tokens="--fs-group,--fs-item-title"><td>分组 / 分项标题</td><td class="canvas-size">33 / 30</td><td class="ppt-size">20 / 18</td><td>明确上下级关系</td></tr>
+              <tr data-type-tokens="--fs-h3,--fs-body"><td>板块题目 / 正文</td><td class="canvas-size">30 / 27</td><td class="ppt-size">18 / 16</td><td>题目加大加粗</td></tr>
+              <tr data-type-tokens="--fs-equation"><td>独立公式</td><td class="canvas-size">27</td><td class="ppt-size">16</td><td>统一数学字形</td></tr>
+              <tr data-type-pt-range="8,14"><td>表格内文字</td><td class="canvas-size">13–23</td><td class="ppt-size">8–14</td><td>按内容密度调整</td></tr>
+              <tr data-type-tokens="--fs-figure-title,--fs-footer"><td>图标题 / 页脚</td><td class="canvas-size">23 / 17</td><td class="ppt-size">14 / 10</td><td>图注说明用 12pt</td></tr>
+            </tbody>
+          </table>
+          <section class="text-block unit-note">
+            <h3 data-edit>换算说明</h3>
+            <p data-edit>标准宽屏下 PPT pt＝画布 px×0.6；本表按常用整数档位显示，px 四舍五入。</p>
+            <p data-edit>CSS 自身的 pt＝px×0.75，两者口径存在差异。</p>
+          </section>
+        </div>
+        <div class="stack ruled">
+          <div class="font-sample"><p data-edit>清楚表达<br>留出呼吸</p><ul class="points font-sample-notes" role="list"><li data-edit>中文优先使用微软雅黑。</li><li data-edit>英文与数字自然衔接 Aa 0123。</li></ul></div>
+          <div class="text-block soft-block"><h3 data-edit>换行与对齐</h3><ul class="points" role="list"><li data-edit>避免末行只剩一至三个字。</li><li data-edit>适量改写，或按完整语义分行。</li><li data-edit>正文、图注和表格均须复查。</li><li data-edit>并列文字末行尽量对齐。</li></ul></div>
+          <p class="small muted" data-edit>左右各留 58px，校徽为 120×120px。更改 PowerPoint 实际页面尺寸后，须重新核算字号并检查换行。</p>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit>北京科技大学 · 科研汇报模板</span><span class="footer-source">换算依据：<a href="https://support.microsoft.com/zh-cn/powerpoint/change-the-size-of-your-powerpoint-slides">PowerPoint 宽屏尺寸</a>与 <a href="https://www.w3.org/Style/Examples/007/units.html">W3C 绝对长度单位</a></span><span class="footer-pagination"><b class="page-number">02</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>标题区高度 168px。正文区自 y=192px 开始，至 y=810px 结束。校徽在 7px 顶部装饰条与 y=166px 分割线之间居中，上下净空均为 19.5px。首句是正文第一段，不放回 header。字号通过 :root 统一修改。本页主标题 28pt，强调字 20pt，卡片标题 18pt，列表文字 14pt；标题与内容同时用字号和字重区分。并列提示采用 ul/li，圆点至文字间距约 24px，对应标准宽屏 PPT 约 0.5cm，续行对齐文字起点。下方“换算说明”采用独立标题和两个完整段落，结合语义改写与空间安排，使信息更充分；改写时保持事实、换算关系和适用条件准确。</p></details>
+</article>
+
+<!-- P03 官方配色。来源可在本目录 PDF 中复核。 -->
+<article class="page" data-page="3" data-label="官方色彩与应用" data-group="00 整体规范" id="p03">
+  <div class="page-bar"><span class="page-id">P03</span><span>官方色彩与应用</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">00</span><span data-edit="">整体规范</span></div><h2 data-edit="">官方色彩与应用</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">科技蓝用于标题与主视觉，辅助色只承担必要的区分，正文始终保持清晰的深色文字。</p>
+      <div class="layout palette-layout">
+        <div class="swatches">
+          <div class="swatch" style="--swatch:#005b94"><h3 data-edit="">科技蓝</h3><p class="swatch-meta">#005B94<br>RGB 0 / 91 / 148</p><p class="swatch-description" data-edit="">学校标准色，作为全篇主色。<br>深蓝底上使用白色标题与正文。</p></div>
+          <div class="swatch" style="--swatch:#a31418"><h3 data-edit="">钢铁红</h3><p class="swatch-meta">#A31418<br>RGB 163 / 20 / 24</p><p class="swatch-description" data-edit="">用于风险或关键差异，少量出现。<br>红色底上使用白字，保持清晰。</p></div>
+          <div class="swatch light" style="--swatch:#bcbec0"><h3 data-edit="">金属灰</h3><p class="swatch-meta">#BCBEC0<br>RGB 188 / 190 / 192</p><p class="swatch-description" data-edit="">用于中性说明与辅助元素。<br>浅灰底上使用深色文字。</p></div>
+        </div>
+        <div class="two-col">
+          <div class="contrast-example dark"><h3 data-edit="">深色应用：白字形成清晰层次</h3><p data-edit="">适用于封面主视觉或重点说明。标题与正文都需有足够对比，避免在深色底上叠放深色小字。</p></div>
+          <div class="contrast-example light"><h3 data-edit="">浅色应用：深色文字承担信息</h3><p data-edit="">适用于注释、图表底色与次要说明。浅底保持轻量，正文仍采用深色，不以白字牺牲可读性。</p></div>
+        </div>
+        <div><div class="gradient-sample"><span>#005B94</span><span>#1766A9</span><span>#2BA3C0</span></div><p class="gradient-caption" data-edit="">官方蓝色渐变用于封面与尾页；正文顶部仅保留 7px 细色边。浅蓝底为本模板辅助用色。</p></div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source">来源：<a href="#ref-colors" data-edit="">《北京科技大学颜色主题规范》A3-01、A3-02、A3-04</a></span><span class="footer-pagination"><b class="page-number">03</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>此页颜色来自随附 PDF。浅蓝底、深色正文和分割线是本模板的排版用色，不另称为官方标准色。保持原始校徽 SVG，不重新着色、不拉伸。</p></details>
+</article>
+
+<!-- P04 目录：四项示例，实际汇报按内容调整。 -->
+<article class="page" data-page="4" data-label="汇报目录" data-group="汇报目录" id="p04">
+  <div class="page-bar"><span class="page-id">P04</span><span>目录页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span data-edit="">汇报概览</span></div><h2 data-edit="">汇报目录</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">本次汇报围绕研究问题、方法设计与实验验证展开，最后讨论当前局限及后续安排。</p>
+      <div class="layout toc">
+        <div class="toc-item"><strong data-edit="">01</strong><div><h3 data-edit="">研究背景</h3><p data-edit="">问题定义与已有工作</p></div><p class="toc-detail" data-edit="">明确研究对象、评价指标与约束，说明现有工作的不足。</p></div>
+        <div class="toc-item"><strong data-edit="">02</strong><div><h3 data-edit="">研究方法</h3><p data-edit="">模型、目标函数与算法</p></div><p class="toc-detail" data-edit="">解释关键设计如何回应研究问题，给出必要公式与流程。</p></div>
+        <div class="toc-item"><strong data-edit="">03</strong><div><h3 data-edit="">实验与分析</h3><p data-edit="">实验设置、结果与讨论</p></div><p class="toc-detail" data-edit="">在统一条件下比较方法，结合消融与失败情形解释差异。</p></div>
+        <div class="toc-item"><strong data-edit="">04</strong><div><h3 data-edit="">总结与计划</h3><p data-edit="">阶段结论与下一步安排</p></div><p class="toc-detail" data-edit="">归纳证据支持的进展，把当前问题落实为可检查的任务。</p></div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit=""></span><span class="footer-pagination"><b class="page-number">04</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>字号与配色规范放在目录前，统一标为“00 整体规范”。目录后从 01 开始，各章先放过渡页，再连续展示本章全部正文；不得在下一章开始后插回上一章。参考资料独立归入“附录”，不计入“总结与计划”。</p></details>
+</article>
+
+<!-- P05 01 研究背景：章节过渡。 -->
+<article class="page" data-page="5" data-label="研究背景 · 章节过渡" data-group="01 研究背景" id="p05">
+  <div class="page-bar"><span class="page-id">P05</span><span>章节过渡</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide chapter-transition">
+    <div class="chapter-transition-inner"><div class="chapter-num" data-edit="">01</div><div class="chapter-divider"></div><h1 class="chapter-title" data-edit="">研究背景</h1><p class="chapter-subtitle" data-edit="">Research Background</p></div>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页开启 01 研究背景。上一章正文须先展示完整，本页之后连续展示本章全部正文；目录、过渡页、左上章节标签与侧栏分组保持一致。</p></details>
+</article>
+
+<!-- P06 双栏正文：用有意义的小标题组织内容。 -->
+<article class="page" data-page="6" data-label="双栏正文" data-group="01 研究背景" id="p06">
+  <div class="page-bar"><span class="page-id">P06</span><span>双栏正文</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">01</span><span data-edit="">研究背景</span></div><h2 data-edit="">研究背景与问题定义</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">一个完整的研究问题需要说明优化目标、决策边界，以及用于验证方法有效性的证据。</p>
+      <div class="layout two-col compact-prose">
+        <div class="stack balanced">
+          <div class="text-block"><h3 data-edit="">问题定义</h3><p class="body-copy" data-edit="">交代研究对象、输入输出与主要约束，明确时间、能耗或质量指标的单位。</p></div>
+          <div class="text-block"><h3 data-edit="">现有方法的局限</h3><p class="body-copy" data-edit="">只讨论与本研究直接相关的不足，说明其出现条件，并给出文献或实验依据。</p></div>
+          <div class="text-block"><h3 data-edit="">评价边界</h3><p class="body-copy" data-edit="">区分训练与测试场景，明确资源预算、适用范围和比较条件。</p></div>
+        </div>
+        <div class="stack balanced ruled">
+          <div class="text-block soft-block"><h3 data-edit="">本研究的处理方式</h3><ul class="points" role="list"><li data-edit="">说明方法如何利用问题结构。</li><li data-edit="">解释关键设计与目标之间的关系。</li><li data-edit="">给出与基线方法一致的验证条件。</li></ul></div>
+          <div class="text-block"><h3 data-edit="">验证证据</h3><p class="body-copy" data-edit="">用主结果与消融实验验证关键设计，同时记录波动范围、失败情形和计算开销。</p></div>
+          <div class="text-block"><p class="small muted" data-edit=""><b>检查重点：</b>关键设计是否对应明确的实验或分析证据？</p></div>
+        </div>
+      </div>
+      <div class="takeaway" data-edit="">本页要点：研究目标、方法设计与验证证据应当相互对应。</div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">内容组织示例，实际汇报需关联研究材料与验证依据</span><span class="footer-pagination"><b class="page-number">06</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>左右栏适合并列或对照。按实际研究内容改写全部示例文字。底部结论条可删除，主内容会自动获得更多高度。标题尽量短，首句避免复述标题。</p></details>
+</article>
+
+<!-- P07 研究现状：四阶段图文时间轴，保留正文首句。 -->
+<article class="page" data-page="7" data-label="研究现状分析" data-group="01 研究背景" id="p07">
+  <div class="page-bar"><span class="page-id">P07</span><span>四阶段研究现状</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide history-slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">01</span><span data-edit="">研究背景</span></div><h2 data-edit="">研究现状分析</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">七十余载薪火相传，从1952年六校矿冶合流到新时代“双一流”建设，学校始终与祖国钢铁工业同频共振，走出了一条从单科性院校到多学科性研究型大学的跨越之路。</p>
+      <div class="layout history-timeline" aria-label="学校发展四阶段，按时间从左向右阅读">
+        <section class="history-stage" style="--stage-color:#005B94;--image-position:center 45%">
+          <h3 class="history-heading"><span class="history-year" data-edit="">1952年</span></h3>
+          <img class="history-image" src="assets/1952Beike.jpg" alt="早期校园建筑，用户提供的历史图片">
+          <p class="history-copy" data-edit="">1952年，清华大学、天津大学等六所高校的矿冶系科合流，成立北京钢铁工业学院，奠定学科根基与办学框架，服务新中国钢铁工业建设。</p>
+        </section>
+        <section class="history-stage" style="--stage-color:#0B709D;--image-position:center 45%">
+          <h3 class="history-heading"><span class="history-year" data-edit="">1960年</span></h3>
+          <img class="history-image" src="assets/1960Beike.png" alt="校园主楼与雕像，用户提供的历史图片">
+          <p class="history-copy" data-edit="">1960年，学校更名为北京钢铁学院，同年被批准为全国重点高等学校。学校立足矿冶优势，巩固学科基础，培养钢铁工业所需的专业人才。</p>
+        </section>
+        <section class="history-stage" style="--stage-color:#1885AC">
+          <h3 class="history-heading"><span class="history-year" data-edit="">1988年</span></h3>
+          <img class="history-image" src="assets/1988Beike.png" alt="北京科技大学校名与主楼，用户提供的校园图片">
+          <p class="history-copy" data-edit="">1988年，学校正式更名为北京科技大学，迈入多科性大学发展阶段。以工为主，多学科协调发展，逐步拓展人才培养与科学研究的领域。</p>
+        </section>
+        <section class="history-stage" style="--stage-color:#2692AC">
+          <h3 class="history-heading"><span class="history-year" data-edit="">新世纪</span></h3>
+          <img class="history-image" src="assets/2008Beike.png" alt="校园建筑与草坪，用户提供的校园图片，并非雄安校区实景">
+          <p class="history-copy" data-edit="">学校入选国家“双一流”建设高校，推进雄安校区建设，布局碳中和学院及未来芯片创新平台，面向国家战略需求拓展前沿与交叉研究。</p>
+        </section>
+        <div class="history-track" aria-label="阶段进展时间轴">
+          <div class="history-marker" style="--stage-color:#005B94"><span class="history-dot" aria-hidden="true"></span><h4 class="history-title" data-edit="">六校矿冶合流</h4></div>
+          <div class="history-marker" style="--stage-color:#0B709D"><span class="history-dot" aria-hidden="true"></span><h4 class="history-title" data-edit="">钢院列名重点</h4></div>
+          <div class="history-marker" style="--stage-color:#1885AC"><span class="history-dot" aria-hidden="true"></span><h4 class="history-title" data-edit="">北科定名转型</h4></div>
+          <div class="history-marker" style="--stage-color:#2692AC"><span class="history-dot" aria-hidden="true"></span><h4 class="history-title" data-edit="">双一流布局前瞻</h4></div>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source">图片：用户提供；文字：<a href="https://www.ustb.edu.cn/xxgk/xxjj/5204.htm">学校简介</a>、<a href="https://www.ustb.edu.cn/yxbm/">院系部门</a>、<a href="https://xaxq.ustb.edu.cn/jsjz/8e53df61926b4fcd86b81d5923859512.htm">雄安校区建设</a></span><span class="footer-pagination"><b class="page-number">07</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页以校史为研究现状分析版式示例。用于真实研究时，将阶段替换为技术演进、代表工作、关键能力与局限，并关联真实文献。上方只放24pt年份；18pt阶段标题移到底部浅色箭头，圆心与对应文字框左沿对齐，竖线沿图文框左沿从圆心一直延伸至年份色块顶端，并与其顶端齐平。图片与段落共用连续浅蓝底，四栏间距16px，内容区相对箭头两端各内缩32px，圆点完整落在箭头内。四图统一等比裁切为311×148px，年份栏至图片、图片至文字块均留16px空隙；14pt段落与页首句两端对齐、末行左对齐。2008Beike.png 仅作校园配图，不表示照片摄于某个事件年份或雄安校区实景。未来芯片相关机构按官网表述为创新平台。四列齐顶、齐图像边界、齐文字框底边，复查段末短行。</p></details>
+</article>
+
+<!-- P08 02 研究方法：章节过渡。 -->
+<article class="page" data-page="8" data-label="研究方法 · 章节过渡" data-group="02 研究方法" id="p08">
+  <div class="page-bar"><span class="page-id">P08</span><span>章节过渡</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide chapter-transition">
+    <div class="chapter-transition-inner"><div class="chapter-num" data-edit="">02</div><div class="chapter-divider"></div><h1 class="chapter-title" data-edit="">研究方法</h1><p class="chapter-subtitle" data-edit="">Research Methods</p></div>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页开启 02 研究方法。上一章正文须先展示完整，本页之后连续展示本章全部正文；目录、过渡页、左上章节标签与侧栏分组保持一致。</p></details>
+</article>
+
+<!-- P09 公式：主公式与符号解释分栏。 -->
+<article class="page" data-page="9" data-label="公式与符号说明" data-group="02 研究方法" id="p09">
+  <div class="page-bar"><span class="page-id">P09</span><span>公式页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">02</span><span data-edit="">研究方法</span></div><h2 data-edit="">目标函数与参数更新</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">以带 L2 正则项的线性回归为例，先给出优化目标，再说明参数更新与各符号含义。</p>
+      <div class="layout two-col wide-left">
+        <div class="formula-sheet">
+          <section class="formula-card">
+          <h3 class="equation-label" data-edit="">带正则项的平方误差目标</h3>
+          <div class="formula-body"><div class="equation-row">
+            <div class="math-expression" data-tex="J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}(\theta^\top x_i-y_i)^2+\frac{\lambda}{2}\lVert\theta\rVert_2^2" data-math-asset="objective"><img class="formula-image" data-math-image="objective" src="assets/math/objective.svg" style="width:15.45838em;height:3.09691em" alt="带 L2 正则项的平方误差目标函数"></div><span class="equation-number">(1)</span>
+          </div>
+          <p class="equation-explanation" data-edit="">平方误差衡量拟合偏差，L2 正则项约束参数规模。<br>本式将全部参数纳入正则化。</p>
+          </div></section>
+          <section class="formula-card">
+          <h3 class="equation-label" data-edit="">梯度下降更新</h3>
+          <div class="formula-body"><div class="equation-row">
+            <div class="math-expression" data-tex="\theta_{t+1}=\theta_t-\alpha\nabla J(\theta_t)" data-math-asset="update"><img class="formula-image" data-math-image="update" src="assets/math/update.svg" style="width:8.31960em;height:0.92627em" alt="梯度下降参数更新公式"></div><span class="equation-number">(2)</span>
+          </div>
+          <p class="equation-explanation" data-edit="">每轮用当前参数计算梯度，再沿负梯度方向更新。<br>学习率 <var>α</var> 控制步长，停止条件由实验设定。</p>
+          </div></section>
+        </div>
+        <aside class="stack ruled symbols-panel"><h3 class="group-title" data-edit="">符号说明</h3><dl class="symbols"><dt><span class="math-symbol" data-tex="m" data-math-asset="symbol-m"><img class="formula-image" data-math-image="symbol-m" src="assets/math/symbol-m.svg" style="width:0.81494em;height:0.48291em" alt="m"></span></dt><dd data-edit="">训练样本数，用于误差项归一化</dd><dt><span class="math-symbol" data-tex="x_i,\,y_i" data-math-asset="symbol-xy"><img class="formula-image" data-math-image="symbol-xy" src="assets/math/symbol-xy.svg" style="width:2.08858em;height:0.68799em" alt="x 下标 i 与 y 下标 i"></span></dt><dd data-edit="">第 <var>i</var> 个输入样本与对应的目标值</dd><dt><span class="math-symbol" data-tex="\theta" data-math-asset="symbol-theta"><img class="formula-image" data-math-image="symbol-theta" src="assets/math/symbol-theta.svg" style="width:0.45020em;height:0.69238em" alt="θ"></span></dt><dd data-edit="">待优化的参数，与输入维度一致</dd><dt><span class="math-symbol" data-tex="\lambda" data-math-asset="symbol-lambda"><img class="formula-image" data-math-image="symbol-lambda" src="assets/math/symbol-lambda.svg" style="width:0.50293em;height:0.70654em" alt="λ"></span></dt><dd data-edit="">正则化强度，<var>λ</var> ≥ 0；控制参数约束</dd><dt><span class="math-symbol" data-tex="\alpha" data-math-asset="symbol-alpha"><img class="formula-image" data-math-image="symbol-alpha" src="assets/math/symbol-alpha.svg" style="width:0.53125em;height:0.48242em" alt="α"></span></dt><dd data-edit="">学习率，<var>α</var> &gt; 0；结合损失变化选择</dd><dt><span class="math-symbol" data-tex="t" data-math-asset="symbol-t"><img class="formula-image" data-math-image="symbol-t" src="assets/math/symbol-t.svg" style="width:0.32275em;height:0.59521em" alt="t"></span></dt><dd data-edit="">迭代序号，由初始参数开始计数</dd></dl><section class="symbol-note" aria-label="数学字体样式说明">
+          <h4 class="math-style-title" data-edit="">字体样式说明</h4>
+          <dl class="math-style-list">
+            <dt data-edit="">常规斜体</dt><dd><span class="math-symbol" data-tex="m,\,\alpha" data-math-asset="symbol-style-scalar"><img class="formula-image" data-math-image="symbol-style-scalar" src="assets/math/symbol-style-scalar.svg" style="width:1.96471em;height:0.60986em" alt="斜体 m 和 alpha"></span><span data-edit="">标量、参数</span></dd>
+            <dt data-edit="">粗斜体</dt><dd><span class="math-symbol" data-tex="\symbfit{x}" data-math-asset="symbol-style-vector"><img class="formula-image" data-math-image="symbol-style-vector" src="assets/math/symbol-style-vector.svg" style="width:0.54736em;height:0.50000em" alt="粗斜体向量 x"></span><span data-edit="">向量</span></dd>
+            <dt data-edit="">粗正体</dt><dd><span class="math-symbol" data-tex="\mathbf{A}" data-math-asset="symbol-style-matrix"><img class="formula-image" data-math-image="symbol-style-matrix" src="assets/math/symbol-style-matrix.svg" style="width:0.77100em;height:0.70000em" alt="粗正体矩阵 A"></span><span data-edit="">矩阵</span></dd>
+            <dt data-edit="">常规正体</dt><dd><span class="math-symbol" data-tex="1,\,\mathrm{m},\,\sin" data-math-asset="symbol-style-upright"><img class="formula-image" data-math-image="symbol-style-upright" src="assets/math/symbol-style-upright.svg" style="width:3.53869em;height:0.80908em" alt="正体数字 1、单位 m 与函数 sin"></span><span data-edit="">数字、单位、函数</span></dd>
+          </dl>
+          <p class="math-style-foot" data-edit="">标题加粗，正文保持常规字重。</p>
+        </section></aside>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">数学排版示例：L2 正则线性回归与梯度下降，适用条件见正文</span><span class="footer-pagination"><b class="page-number">09</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>每个公式独立成框：18pt 深底白字题目条与浅色框上下贴合，公式和解释均为 16pt（画布约 27px）。右侧浅色框展示斜体、粗斜体、粗正体与常规正体的实际字形示例。公式与符号统一使用 Cambria Math 生成的轮廓 SVG，每个对象只显示一份，不运行联网二次渲染。符号栏使用同字体数学 SVG，行内变量使用 var 斜体，编辑 LaTeX 后运行 scripts/render-formulas.py 重绘 SVG，再刷新图片缓存；解释和符号表同步更新。所有段落都要检查末行孤字，先适量改写，再按语义分行；不可只为排版删掉必要条件。</p></details>
+</article>
+
+<!-- P10 伪代码 -->
+<article class="page" data-page="10" data-label="算法伪代码" data-group="02 研究方法" id="p10">
+  <div class="page-bar"><span class="page-id">P10</span><span>伪代码页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">02</span><span data-edit="">研究方法</span></div><h2 data-edit="">迭代优化算法</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">伪代码保留决定算法行为的主要步骤，并将输入、输出与停止条件写清楚。</p>
+      <div class="layout two-col wide-left">
+        <div class="algorithm">
+          <div class="algorithm-title"><span>Algorithm 1</span><b data-edit="">固定步长梯度下降</b></div>
+          <p class="algorithm-io" data-edit=""><b>输入：</b>目标函数 J，初值 θ₀，步长 α &gt; 0，阈值 ε &gt; 0，最大迭代数 T</p>
+          <p class="algorithm-io" data-edit=""><b>输出：</b>最终参数 θ</p>
+          <ol class="code-lines">
+            <li data-edit="">θ ← θ₀</li>
+            <li data-edit=""><span class="kw">for</span> t = 0, …, T − 1 <span class="kw">do</span></li>
+            <li data-edit="">    g ← ∇J(θ)</li>
+            <li data-edit="">    <span class="kw">if</span> ‖g‖₂ ≤ ε <span class="kw">then break</span></li>
+            <li data-edit="">    θ ← θ − αg</li>
+            <li data-edit=""><span class="kw">end for</span></li>
+            <li data-edit=""><span class="kw">return</span> θ</li>
+          </ol>
+        </div>
+        <div class="stack balanced ruled">
+          <div class="text-block"><h3 data-edit="">与公式保持一致</h3><p class="body-copy" data-edit="">参数、目标函数和步长沿用公式页的符号，避免在算法页重新命名同一变量。</p></div>
+          <div class="text-block"><h3 data-edit="">说明适用条件</h3><p class="body-copy" data-edit="">固定步长依赖目标函数性质。复杂约束、投影或自适应更新按实际算法补充。</p></div>
+          <div class="text-block soft-block"><h3 data-edit="">保留复现信息</h3><p class="body-copy" data-edit="">记录初始化、随机种子与停止准则，对照算法实现和实验记录。</p></div>
+          <p class="small muted" data-edit="">本示例只说明控制流程，不作收敛保证。</p>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">算法示例：固定步长梯度下降，与式 (1)–(2) 对应</span><span class="footer-pagination"><b class="page-number">10</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>代码行用有序列表自动编号，嵌套用空格缩进，关键词使用 kw。每页建议 7 至 10 行，输入和输出另计。长算法拆分，不使用滚动代码框。复杂表达式沿用公式页的 data-tex 与单一 SVG 生成流程。</p></details>
+</article>
+
+<!-- P11 03 实验与分析：章节过渡。 -->
+<article class="page" data-page="11" data-label="实验与分析 · 章节过渡" data-group="03 实验与分析" id="p11">
+  <div class="page-bar"><span class="page-id">P11</span><span>章节过渡</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide chapter-transition">
+    <div class="chapter-transition-inner"><div class="chapter-num" data-edit="">03</div><div class="chapter-divider"></div><h1 class="chapter-title" data-edit="">实验与分析</h1><p class="chapter-subtitle" data-edit="">Experiments and Analysis</p></div>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页开启 03 实验与分析。上一章正文须先展示完整，本页之后连续展示本章全部正文；目录、过渡页、左上章节标签与侧栏分组保持一致。</p></details>
+</article>
+
+<!-- P12 原生表格：不编造实验结果，用明确标记的待填项。 -->
+<article class="page" data-page="12" data-label="实验结果表格" data-group="03 实验与分析" id="p12">
+  <div class="page-bar"><span class="page-id">P12</span><span>表格页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">03</span><span data-edit="">实验与分析</span></div><h2 data-edit="">实验结果与方法比较</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">在统一条件下比较不同场景，以均值 ± 标准差报告结果。下表仅展示多级表头与数据格式。</p>
+      <div class="layout comparison-layout">
+        <div class="table-baseline"><span>字号基准 <b>12pt</b>，按 <b>12 / 11 / 10pt</b> 自适应</span><span>使用常用整数档位，保持 8pt 以上、14pt 以下</span><span>当前 <b data-table-size="">11pt</b></span></div>
+        <div class="comparison-wrap"><table class="data-table adaptive-table" data-adaptive-table="" data-base-pt="12" data-pt-stops="10,11,12" aria-label="三个场景和九项指标的实验结果占位表" data-font-pt="11" data-overflow="false" style="--table-font: 18.333333333333336px; --cell-pad-y: 10px; --cell-pad-x: .5em; --table-line-height: 1.3;">
+          <colgroup><col style="width:12%"></colgroup><colgroup><col span="3" style="width:9.777778%"></colgroup><colgroup><col span="3" style="width:9.777778%"></colgroup><colgroup><col span="3" style="width:9.777778%"></colgroup>
+          <thead>
+            <tr><th scope="col" rowspan="2" data-edit="">算法</th><th scope="colgroup" colspan="3" data-edit="">场景一</th><th scope="colgroup" colspan="3" data-edit="">场景二</th><th scope="colgroup" colspan="3" data-edit="">场景三</th></tr>
+            <tr><th scope="col" data-edit="">质量 / % ↑</th><th scope="col" data-edit="">耗时 / s ↓</th><th scope="col" data-edit="">可行率 / % ↑</th><th scope="col" data-edit="">质量 / % ↑</th><th scope="col" data-edit="">耗时 / s ↓</th><th scope="col" data-edit="">可行率 / % ↑</th><th scope="col" data-edit="">质量 / % ↑</th><th scope="col" data-edit="">耗时 / s ↓</th><th scope="col" data-edit="">可行率 / % ↑</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row" data-edit="">基线方法 A</th><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td></tr>
+            <tr><th scope="row" data-edit="">基线方法 B</th><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td></tr>
+            <tr><th scope="row" data-edit="">学习方法 C</th><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td></tr>
+            <tr><th scope="row" data-edit="">消融设置 1</th><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td></tr>
+            <tr><th scope="row" data-edit="">消融设置 2</th><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td></tr>
+            <tr class="highlight"><th scope="row" data-edit="">本文方法</th><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td><td data-edit="">xx.xx ± xx.xx</td></tr>
+          </tbody>
+        </table></div>
+        <div class="comparison-note">
+          <section class="comparison-note-block"><h3 data-edit="">实验口径</h3><ul class="points" role="list"><li data-edit="">说明场景参数、测试集划分及独立重复次数。</li><li data-edit="">明确计时范围，统一均值与标准差的统计口径。</li></ul></section>
+          <section class="comparison-note-block"><h3 data-edit="">符号说明</h3><ul class="points" role="list"><li data-edit="">↑ 表示数值越大越优，↓ 表示数值越小越优。</li><li data-edit="">xx.xx ± xx.xx 为均值 ± 标准差的待填格式。</li></ul></section>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">数据来源：待填写实验记录或论文表号；本页无真实实验数据</span><span class="footer-pagination"><b class="page-number">12</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>多级表头按“算法 → 场景 → 指标”组织，两级表头均使用深底白字。所有 xx.xx ± xx.xx 都是格式占位符，突出本文方法不表示最优。基准为 PPT 12pt，依次尝试 12、11、10pt 整数档，同时调整行高和内边距。检查数字墨迹是否进入相邻单元格的留白；10pt 仍溢出则拆分场景或指标，不继续缩字。实际汇报可删除顶部排版说明条，但保留自适应代码。下方两组无底色说明采用 14pt 独立标题与 12pt 列表，等宽并相对画布中线对称，组间 96px，与表格间隔 24px。末行一至三个字均须检查，优先按语义改写或分条。</p></details>
+</article>
+
+<!-- P13 左图右文。图片是从随附官方规范直接截取的真实示例。 -->
+<article class="page" data-page="13" data-label="单图与说明" data-group="03 实验与分析" id="p13">
+  <div class="page-bar"><span class="page-id">P13</span><span>单图页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">03</span><span data-edit="">实验与分析</span></div><h2 data-edit="">主图与关键信息</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">主图占据主要空间，右侧围绕图中可以直接观察到的特征展开说明。</p>
+      <div class="layout two-col wide-left">
+        <figure class="figure"><div class="imgbox"><img src="assets/example-blue-cover.png" alt="官方科研类 PPT 单独楼宇模板示例：蓝色渐变主视觉，下方白色信息区"></div><figcaption><strong data-edit="">图 1　官方科研类 PPT 示意</strong><span class="figure-caption-detail" data-edit="">蓝色主视觉与白色信息区分开组织。</span></figcaption></figure>
+        <div class="stack ruled image-notes">
+          <div class="text-block"><h3 data-edit="">主视觉与信息分区</h3><p class="body-copy" data-edit="">蓝色区域突出报告主题，底部白色区域集中放置主持人、学院与时间。</p></div>
+          <div class="text-block"><h3 data-edit="">背景图形与文字对比</h3><p class="body-copy" data-edit="">楼宇线稿作为弱化背景，与白色主标题错位排布，保持文字清晰可辨。</p></div>
+          <section class="text-block soft-block"><h3 data-edit="">研究图像替换要点</h3><ul class="points" role="list"><li data-edit="">保留坐标、单位、图例及必要标注。</li><li data-edit="">先写图中观察，再说明条件与局限。</li><li data-edit="">结论对应图中证据，避免过度推断。</li></ul></section>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source"><a href="#ref-visual" data-edit="">图片来源：《北京科技大学多媒体课件视觉规范》B1-01-02</a></span><span class="footer-pagination"><b class="page-number">13</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>imgbox 使用剩余高度，图注在独立行。图片 object-fit:contain，保持比例，完整显示。右侧以两组图像观察和一组浅蓝底替换提示共同组织空间，标题 18pt、观察正文 16pt、提示列表 14pt，组间保留 20px。实际汇报按证据改为观察、解释、条件或局限，不机械凑三块。逐页检查真实图文的占用范围，不能把容器满高误当成内容充实，也不能用巨大间距拉满页面。若纵向图细节太小，改用整页单图或分成两页。图片、图注、来源必须同时替换。</p></details>
+</article>
+
+<!-- P14 并列图片：同等空间、统一图注。 -->
+<article class="page" data-page="14" data-label="双图对照" data-group="03 实验与分析" id="p14">
+  <div class="page-bar"><span class="page-id">P14</span><span>双图页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">03</span><span data-edit="">实验与分析</span></div><h2 data-edit="">并列图片与对照说明</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">两张图片使用相同展示空间与图注层级，帮助听众围绕一致的观察口径进行比较。</p>
+      <div class="layout paired-figures">
+        <figure class="figure"><div class="imgbox"><img src="assets/example-campus.png" alt="官方科研 PPT 楼宇组合模板，建筑线稿位于蓝色画面下部"></div><figcaption><strong data-edit="">(a) 楼宇组合</strong><span class="figure-caption-detail" data-edit="">建筑轮廓位于下部，为标题保留完整区域。</span></figcaption></figure>
+        <figure class="figure"><div class="imgbox"><img src="assets/example-motto.png" alt="官方科研 PPT 为中华之崛起模板，校内景物作为蓝色背景"></div><figcaption><strong data-edit="">(b) 校园场景</strong><span class="figure-caption-detail" data-edit="">背景图像降低视觉强度，文字保持清晰。</span></figcaption></figure>
+      </div>
+      <div class="takeaway" data-edit="">对照说明：两种方案采用相近的蓝色主调，通过不同背景表达学校特色。</div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source"><a href="#ref-visual" data-edit="">图片来源：《北京科技大学多媒体课件视觉规范》B1-01-03、B1-01-05</a></span><span class="footer-pagination"><b class="page-number">14</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>双图比较实验结果时，尽量统一坐标范围、单位、颜色映射及图例。图片尺寸相同不等于数据口径相同，生成实际汇报时需核对原图。不得只裁掉不利区域或必要注释。</p></details>
+</article>
+
+<!-- P15 04 总结与计划：章节过渡。 -->
+<article class="page" data-page="15" data-label="总结与计划 · 章节过渡" data-group="04 总结与计划" id="p15">
+  <div class="page-bar"><span class="page-id">P15</span><span>章节过渡</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide chapter-transition">
+    <div class="chapter-transition-inner"><div class="chapter-num" data-edit="">04</div><div class="chapter-divider"></div><h1 class="chapter-title" data-edit="">总结与计划</h1><p class="chapter-subtitle" data-edit="">Summary and Future Work</p></div>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页开启 04 总结与计划。上一章正文须先展示完整，本页之后连续展示本章全部正文；目录、过渡页、左上章节标签与侧栏分组保持一致。</p></details>
+</article>
+
+<!-- P16 总结与计划 -->
+<article class="page" data-page="16" data-label="总结与后续计划" data-group="04 总结与计划" id="p16">
+  <div class="page-bar"><span class="page-id">P16</span><span>总结页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index" data-edit="">04</span><span data-edit="">总结与计划</span></div><h2 data-edit="">阶段总结与后续计划</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">总结已经获得证据支持的进展，并将尚未解决的问题落实到可检查的后续工作。</p>
+      <div class="layout two-col">
+        <div class="summary-panel"><h3 class="group-title" data-edit="">阶段总结</h3><ol class="summary-list"><li><h4 class="item-title" data-edit="">已完成的工作</h4><p class="body-copy" data-edit="">列出已实现的方法与完成的实验，注明代码版本、数据范围和记录位置。</p></li><li><h4 class="item-title" data-edit="">证据支持的结论</h4><p class="body-copy" data-edit="">关联对应图表，写明结论适用的场景与条件；初步观察需标明尚待复核。</p></li><li><h4 class="item-title" data-edit="">仍待解决的问题</h4><p class="body-copy" data-edit="">指出未覆盖的场景、失败情形及主要限制，说明其对当前判断的影响。</p></li></ol></div>
+        <div class="summary-panel ruled"><h3 class="group-title" data-edit="">下一步计划</h3><div class="plan-wrap"><table class="data-table plan-table" aria-label="后续计划"><colgroup><col style="width:19%"><col style="width:36%"><col></colgroup><thead><tr><th scope="col">工作阶段</th><th scope="col">关键任务</th><th scope="col">验收产出</th></tr></thead><tbody><tr><th scope="row" data-edit="">近期</th><td data-edit="">统一实验设置<br>固定数据划分</td><td data-edit="">参数清单、数据版本<br>及可复现的实验脚本</td></tr><tr><th scope="row" data-edit="">随后</th><td data-edit="">补充对照实验<br>开展关键消融</td><td data-edit="">均值 ± 标准差<br>重复次数及原始日志</td></tr><tr><th scope="row" data-edit="">并行</th><td data-edit="">分析异常结果<br>归纳失败案例</td><td data-edit="">差异解释与边界条件<br>可定位的典型样例</td></tr><tr><th scope="row" data-edit="">下次汇报</th><td data-edit="">汇总新增证据<br>逐项回应问题</td><td data-edit="">更新图表与问题清单<br>逐项修订研究结论</td></tr></tbody></table></div><p class="discussion-note" data-edit=""><b>本次讨论：</b>确认实验优先级和验收标准。<br>各阶段时间按实际进展填写。</p></div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">阶段总结与任务安排示例，以实际工作记录为准</span><span class="footer-pagination"><b class="page-number">16</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页文字是总结结构提示。实际汇报只保留与项目相关的内容，按证据强弱区分已完成、初步观察和待验证。计划写明时间、任务和可检查的产出。表格用 14pt、上下 8px 内边距，按自然高度排布；说明块位于表格之后并至少间隔 12px，禁止遮盖表格的任何区域。多句文字先判断按句或短语分行是否更利于阅读，避免机械分句。</p></details>
+</article>
+
+<!-- P17 附录：资料来源 / 参考文献。 -->
+<article class="page" data-page="17" data-label="模板资料来源" data-group="附录" id="p17">
+  <div class="page-bar"><span class="page-id">P17</span><span>资料来源页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index appendix-index" data-edit="">附录</span><span data-edit="">资料来源</span></div><h2 data-edit="">模板资料来源</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">本模板的官方色彩与视觉示例来自随附文件，页面尺寸和正文校徽尺寸参考现有组会汇报。</p>
+      <div class="layout">
+        <ol class="reference-list annotated">
+          <li id="ref-colors"><h3 data-edit="">北京科技大学．《北京科技大学颜色主题规范》</h3><p data-edit="">对应页码：A3-01 学校标准色、A3-02 辅助色系列、A3-04 渐变色彩搭配。</p><span class="reference-use" data-edit="">用于核对科技蓝、钢铁红、金属灰及官方渐变端点，对应本模板配色页与封面条带。</span></li>
+          <li id="ref-visual"><h3 data-edit="">北京科技大学．《北京科技大学多媒体课件视觉规范》</h3><p data-edit="">对应页码：B1-01-02 科研类模板、B1-01-03 楼宇组合、B1-01-05 校园场景。</p><span class="reference-use" data-edit="">用于科研主题视觉参考及图片页示例；图片下方的图注解释内容，页脚标注出处。</span></li>
+          <li id="ref-slide-layout"><h3 data-edit="">《科研汇报版式参考 (Boysun Liao)》</h3><p data-edit="">对应内容：三段式封面、120px 标志尺寸，以及白底正文页的标题和图文层次。</p><span class="reference-use" data-edit="">本模板在此基础上调整首句位置、校徽居中与信息密度，后续汇报保持同一套母版。</span></li>
+        </ol>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">资料文件与对应页码见正文；实际汇报替换为相关研究文献</span><span class="footer-pagination"><b class="page-number">17</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>参考资料作为独立附录，不属于“总结与计划”，左上使用“附录”标签，不续编正文章节号。多页参考文献均保持附录分组，每条文献保留唯一稳定锚点。模板资料来源页使用较宽行距，建议每页 3 至 5 条。文献信息必须核实，不为补齐版式杜撰条目。实际汇报不必保留本模板的制作来源页。</p></details>
+</article>
+
+<!-- P18 附录：GB/T 7714-2025 文献著录示例。无表头，序号左对齐，正文两端对齐且末行左对齐，均顶端对齐。 -->
+<article class="page" data-page="18" data-label="参考文献著录示例" data-group="附录" id="p18">
+  <div class="page-bar"><span class="page-id">P18</span><span>参考文献示例</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index appendix-index" data-edit="">附录</span><span data-edit="">参考文献</span></div><h2 data-edit="">参考文献著录示例</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <p class="lead" data-edit="">按文献本体选择类型, 在线载体用 /OL; 著录分隔符使用英文标点, 其后留一个空格。</p>
+      <div class="layout">
+        <table class="bibliography-table" aria-label="GB/T 7714-2025 常见文献类型著录示例"><colgroup><col style="width:48px"><col></colgroup><tbody>
+          <tr id="ref-demo-journal"><td data-edit="">[1]</td><td data-edit="">徐建委. 历史的起点: "史记"中的时间设置及其意义[J]. 北京大学学报(哲学社会科学版), 2025, 62(2): 117-127.</td></tr>
+          <tr id="ref-demo-book"><td data-edit="">[2]</td><td data-edit="">Peebles P Z Jr. Probability, random variables, and random signal principles[M]. 4th ed. New York: McGraw-Hill, 2001.</td></tr>
+          <tr id="ref-demo-newspaper"><td data-edit="">[3]</td><td data-edit="">丁文详. 数字革命与竞争国际化[N]. 中国青年报, <span class="reference-date">2000-<wbr>11-<wbr>20(15)</span>.</td></tr>
+          <tr id="ref-demo-thesis"><td data-edit="">[4]</td><td data-edit="">Cairns B R. Infrared spectroscopic studies of solid oxygen[D]. Berkeley: University of California, Berkeley, 1965: 15.</td></tr>
+          <tr id="ref-demo-conference"><td data-edit="">[5]</td><td data-edit="">Yufin S A. Geoecology and computers: proceedings of the Third International Conference on Advances of Computer Methods in Geotechnical and Geoenvironmental Engineering, Moscow, Russia, February 1-4, 2000[C]. Rotterdam: A. A. Balkema, 2000.</td></tr>
+          <tr id="ref-demo-standard"><td data-edit="">[6]</td><td data-edit=""><span class="reference-token">GB/T 7714-2025</span> 信息与文献 参考文献著录规则[S].</td></tr>
+          <tr id="ref-demo-patent"><td data-edit="">[7]</td><td data-edit="">邓一刚. 全智能节电器: <span class="reference-token">CN200610171314.3</span>[P]. <span class="reference-date">2008-<wbr>01-<wbr>16</span>: 8-9.</td></tr>
+          <tr id="ref-demo-report"><td data-edit="">[8]</td><td data-edit="">汤万金, 杨跃翔, 刘文, 等. 人体安全重要技术标准研制最终报告: <span class="reference-token">7178999X-2006BAK04A10/10.2013</span>[R/OL]. <span class="reference-date">2013-<wbr>09-<wbr>30</span>. <span class="reference-link">http://www.nstrs.cn/xiangxiBG.aspx?id=41707</span>.</td></tr>
+          <tr id="ref-demo-web"><td data-edit="">[9]</td><td data-edit="">Library of Congress[EB/OL]. <span class="reference-date">[2020-<wbr>06-<wbr>12]</span>. <span class="reference-link">https://www.loc.gov</span>.</td></tr>
+          <tr id="ref-demo-dataset"><td data-edit="">[10]</td><td data-edit="">IHME. Global burden of disease study 2019 (GBD 2019) data resources[DS/OL]. Global Health Data Exchange<span class="reference-date">(2021)<wbr>[2025-<wbr>07-<wbr>15]</span>. <span class="reference-link">https://ghdx.healthdata.org/gbd-2019</span>.</td></tr>
+          <tr id="ref-demo-preprint"><td data-edit="">[11]</td><td data-edit="">Jenkins S D, Ruostekoski J. Controlled manipulation of light by cooperative response of atoms in an optical lattice[PP/OL]. V2. <span class="reference-date">(2012-<wbr>03-<wbr>18)<wbr>[2020-<wbr>06-<wbr>24]</span>. <span class="reference-link">https://doi.org/10.48550/arXiv.1112.6136</span>.</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source">格式依据: <a href="https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=C6CE52E55AC09B9C79A20AEA77CEDD14">GB/T 7714-2025</a>; 条目整理自随附要求, 仅作著录示范</span><span class="footer-pagination"><b class="page-number">18</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>示范随附《新国标参考文献要求.md》中的 11 类常见文献: J、M、N、D、C、S、P、R、EB、DS、PP, 并非国家标准全部类型的穷举。条目用于著录格式教学, 不构成本汇报的研究证据; 真实引用须核对原文、版本、出版信息与链接。序号与条目分列, 无表头、无框线, 序号左对齐, 正文两端对齐且末行左对齐, 均顶端对齐; 链接允许内部换行, 日期允许在连字符后及相邻括号组之间换行, 不改变复制内容; 默认 12pt, 内容多时拆页。采用英文标点, 著录用句点、逗号、冒号及分号后留一个半角空格; URL、DOI、专利号、版本号及其他标识符的内部标点保持原样。保留页脚来源链接及每条文献的稳定锚点; 参考文献增至多页时, 页内引用仍定位到对应条目。</p></details>
+</article>
+
+<!-- P19 附录：作者简介。保留履历、任职或成果、研究方向，所有个人信息均为占位。 -->
+<article class="page" data-page="19" data-label="作者简介" data-group="附录" id="p19">
+  <div class="page-bar"><span class="page-id">P19</span><span>作者简介</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide">
+    <header class="slide-header"><div class="section-line"><span class="section-index appendix-index" data-edit="">附录</span><span data-edit="">作者信息</span></div><h2 data-edit="">作者简介</h2><img class="slide-logo" src="assets/logo.svg" alt="北京科技大学校徽"></header>
+    <div class="slide-content">
+      <div class="layout profile-layout">
+        <aside class="profile-identity" aria-label="作者身份信息">
+          <img class="profile-portrait" src="assets/avatar-placeholder.svg" alt="作者照片占位，请替换为本人照片">
+          <h3 class="profile-name" data-edit="">作者姓名</h3>
+          <p class="profile-role" data-edit="">职称／学位</p>
+          <p class="profile-unit" data-edit="">学院／研究机构<br>团队／实验室</p>
+          <p class="profile-contact" data-edit="">邮箱：name@example.com</p>
+          <div class="profile-metrics" aria-label="可选成果数量"><div><b data-edit="">XX</b><span data-edit="">论文（篇）</span></div><div><b data-edit="">XX</b><span data-edit="">项目（项）</span></div></div>
+        </aside>
+        <div class="profile-sections">
+          <section class="profile-section"><h3 data-edit="">教育和工作经历</h3>
+            <table class="data-table profile-history" aria-label="作者教育和工作经历"><colgroup><col style="width:22%"><col class="profile-spacer-col"><col style="width:40%"><col class="profile-spacer-col"><col></colgroup>
+              <thead><tr><th scope="col">起止时间</th><td class="profile-spacer" aria-hidden="true"></td><th scope="col">学校／工作单位</th><td class="profile-spacer" aria-hidden="true"></td><th scope="col">学位／专业／职务</th></tr></thead>
+              <tbody><tr><td data-edit="">20XX—20XX</td><td class="profile-spacer" aria-hidden="true"></td><td data-edit="">学校及院系</td><td class="profile-spacer" aria-hidden="true"></td><td data-edit="">学位与专业</td></tr><tr><td data-edit="">20XX—20XX</td><td class="profile-spacer" aria-hidden="true"></td><td data-edit="">研究机构／工作单位</td><td class="profile-spacer" aria-hidden="true"></td><td data-edit="">科研岗位</td></tr><tr><td data-edit="">20XX—至今</td><td class="profile-spacer" aria-hidden="true"></td><td data-edit="">现工作单位</td><td class="profile-spacer" aria-hidden="true"></td><td data-edit="">现任职务</td></tr></tbody>
+            </table>
+          </section>
+          <section class="profile-section"><h3 data-edit="">主要学术任职／代表性项目（奖项）</h3>
+            <div class="profile-section-body">
+              <div><h4 data-edit="">学术任职</h4><ul class="points" role="list"><li data-edit="">学术组织／期刊：职务</li><li data-edit="">任期／服务事项：时间</li></ul></div>
+              <div><h4 data-edit="">代表性项目与奖项</h4><ul class="points" role="list"><li data-edit="">项目：名称、本人角色</li><li data-edit="">奖项：名称、年份／排名</li></ul></div>
+            </div>
+          </section>
+          <section class="profile-section"><h3 data-edit="">主要研究方向</h3>
+            <div class="profile-section-body profile-research">
+              <div><h4 data-edit="">研究方向一</h4><ul class="points" role="list"><li data-edit="">研究对象：</li><li data-edit="">核心问题：</li></ul></div>
+              <div><h4 data-edit="">研究方向二</h4><ul class="points" role="list"><li data-edit="">主要方法：</li><li data-edit="">技术特点：</li></ul></div>
+              <div><h4 data-edit="">研究方向三</h4><ul class="points" role="list"><li data-edit="">应用场景：</li><li data-edit="">研究目标：</li></ul></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer"><span class="footer-identity" data-edit="">北京科技大学 · 科研汇报模板</span><span class="footer-source" data-edit="">作者信息占位示例；请以本人简历与可核实成果为准</span><span class="footer-pagination"><b class="page-number">19</b> / <span class="page-total">20</span></span></footer>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>本页采用通用头像占位，不对应参考图中的人物。填写真实姓名、职称、单位和联系方式；教育与工作经历按时间连续组织。履历表五列交替放内容与半字符空白，表头 14pt、正文 12pt，均水平居中；仅三个内容表头下画分隔线，空白列不画线。身份框与右侧末块底边齐平，底部同字号文字末行对齐；数量占位保留加粗 XX。任职需注明组织、职务及任期，项目需注明本人角色，奖项需注明年份及必要排名。研究方向保留具体对象、方法或应用信息，按材料调整列数。没有的经历可删减，不能补造学术任职、头衔、论文数量或奖项。左侧浅底身份区、右侧平直蓝色标题条延续母版风格，不使用斜切飘带、夸大数字或重阴影。内容增多时拆成另一张附录页，不缩小到难读或覆盖下方板块。</p></details>
+</article>
+
+<!-- P20 尾页：与封面共用 .cover、.cover-band h1 等规则。 -->
+<article class="page" data-page="20" data-label="结束页" data-group="结束" id="p20">
+  <div class="page-bar"><span class="page-id">P20</span><span>结束页</span><span class="right">16:9</span></div>
+  <div class="frame" style="width: 100%; --scale: 0.53875;"><section class="slide cover closing" aria-label="结束页">
+    <div class="cover-top"><img src="assets/logo-full.svg" alt="北京科技大学校徽与中英文校名"></div>
+    <div class="cover-band"><h1 data-edit="">感谢聆听，恳请批评指正</h1><p data-edit="">Thank you for your attention</p></div>
+    <div class="cover-bottom"><table class="cover-info" aria-label="汇报信息"><tbody>
+      <tr><th scope="row"><span data-edit="">汇报人</span></th><td data-edit="">请填写姓名</td></tr>
+      <tr><th scope="row"><span data-edit="">导师</span></th><td data-edit="">请填写导师</td></tr>
+      <tr><th scope="row"><span data-edit="">汇报日期</span></th><td data-edit="">请填写汇报日期</td></tr>
+    </tbody></table></div>
+  </section></div>
+  <details class="notes"><summary>演讲备注</summary><p>尾页与封面的校徽、条带高度、主标题字号完全一致。联系方式可加入底部信息区，避免覆盖主题条带或标志。</p></details>
+</article>
+</main>
+<dialog class="print-guide" id="print-guide" aria-labelledby="print-guide-title" aria-describedby="print-guide-format">
+  <h2 id="print-guide-title">导出 16:9 PDF</h2>
+  <p class="print-format" id="print-guide-format">推荐使用同目录的“导出PDF.cmd”</p>
+  <ol>
+    <li>先用<strong>“保存HTML”</strong>保存当前修改。</li>
+    <li>将保存的 HTML 文件拖到<strong>“导出PDF.cmd”</strong>上；双击工具则导出磁盘上的 template.html。</li>
+    <li>PDF 保存在 HTML 同一目录，每页为 <strong>960×540pt（16:9）</strong>，画布整体等比缩放，不套用 A4 纸张。</li>
+  </ol>
+  <p class="print-note">纸张打印与 PDF 导出不同：A4 即使设为横向、去掉页眉页脚，也可能有比例白边。下方“浏览器打印”用于常规打印；需要精确 16:9 PDF 时，请使用导出工具。工具需要 Python 3.10+ 和 Chrome 或 Edge。</p>
+  <div class="print-guide-actions"><button type="button" id="print-cancel">返回</button><button type="button" class="print-confirm" id="print-confirm">浏览器打印</button></div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- embedded-assets:start (generated by scripts/embed-assets.py) -->
+<script id="embedded-assets" src="assets/template.embedded.js"></script>
+<!-- embedded-assets:end -->
+<script>
+'use strict';
+const pages = [...document.querySelectorAll('article.page')];
+const TOTAL_PAGES = pages.length;
+let showSession=null, showWheelTotal=0, showWheelTime=0, showWheelLock=0;
+let showZoom=1, showPanX=0, showPanY=0, showDrag=null, showSuppressClick=false;
+let currentPage = 1;
+let toastTimer;
+let scrollView = document.body.dataset.scrollView === 'grid' ? 'grid' : 'scroll';
+
+// 从页面顺序生成目录与页码。复制、删除、重排 article 后重新打开即可同步。
+function buildNavigation() {
+  const nav = document.querySelector('.sidebar');
+  nav.replaceChildren();
+  const summary = document.querySelector('[data-deck-summary]');
+  if (summary) summary.textContent = TOTAL_PAGES + ' 页版式参考 · 1600 × 900';
+  let lastGroup = '';
+  pages.forEach((page, index) => {
+    const n = index + 1, label = String(n).padStart(2, '0');
+    page.dataset.page = String(n);
+    page.id = 'p' + label;
+    const heading = page.querySelector('h2, h1');
+    const title = page.dataset.label || heading?.textContent.trim() || '页面 ' + label;
+    const group = page.dataset.group || '页面目录';
+    if (group !== lastGroup) {
+      const groupLabel = document.createElement('div');
+      groupLabel.className = 'side-label'; groupLabel.textContent = group;
+      nav.append(groupLabel); lastGroup = group;
+    }
+    const link = document.createElement('a');
+    link.className = 'nav-link'; link.href = '#' + page.id; link.dataset.page = n;
+    const num = document.createElement('b'); num.textContent = label;
+    const text = document.createElement('span'); text.textContent = title;
+    link.append(num, text); link.addEventListener('click', event => { event.preventDefault(); gotoPage(n); });
+    nav.append(link);
+    const bar = page.querySelector('.page-id'); if (bar) bar.textContent = 'P' + label;
+    page.querySelectorAll('.page-number').forEach(el => el.textContent = label);
+    page.querySelectorAll('.page-total').forEach(el => el.textContent = String(TOTAL_PAGES).padStart(2, '0'));
+  });
+}
+function fit() {
+  syncTypeScale();
+  const present = document.body.classList.contains('present');
+  const showing=!!showSession;
+  const toolbarHeight = showing ? 0 : document.querySelector('.toolbar').getBoundingClientRect().height;
+  const main = document.querySelector('main');
+  main.style.paddingTop = (toolbarHeight + (present ? 16 : 24)) + 'px';
+  document.documentElement.style.setProperty('--toolbar-offset', (toolbarHeight + 20) + 'px');
+  document.querySelector('.sidebar').style.top = toolbarHeight + 'px';
+  pages.forEach(page => {
+    const frame = page.querySelector('.frame');
+    const available = page.clientWidth;
+    const scale = Math.max(.01, present ? Math.min(available / 1600, (innerHeight - toolbarHeight - (showing ? 0 : 32)) / 900, showing ? Infinity : 1) : available / 1600);
+    frame.style.width = present ? (1600 * scale) + 'px' : '100%';
+    frame.style.margin = present ? 'auto' : '';
+    frame.style.setProperty('--scale', scale);
+  });
+  adjustTables();
+  if(showSession) applyShowTransform();
+}
+// 等效 PowerPoint 字号按整张幻灯片的物理宽度换算，不能直接当作 CSS pt 写入。
+function pptPtPerPx() {
+  const points=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ppt-width-pt')) || 960;
+  const pixels=parseFloat(getComputedStyle(pages[0].querySelector('.slide')).width);
+  return points / pixels;
+}
+function syncTypeScale() {
+  const ratio=pptPtPerPx(), probe=document.createElement('span');
+  probe.style.cssText='position:fixed;visibility:hidden;pointer-events:none';
+  document.body.append(probe);
+  document.querySelectorAll('[data-type-tokens], [data-type-pt-stops], [data-type-pt-range]').forEach(row=>{
+    let px,pt;
+    if (row.dataset.typeTokens) {
+      px=row.dataset.typeTokens.split(',').map(token=>{probe.style.fontSize='var('+token.trim()+')';return parseFloat(getComputedStyle(probe).fontSize);});
+      pt=px.map(value=>Math.round(value*ratio));
+    } else {
+      pt=(row.dataset.typePtRange || row.dataset.typePtStops).split(',').map(Number);px=pt.map(value=>value/ratio);
+    }
+    const separator=row.dataset.typePtRange ? '–' : ' / ';
+    row.querySelector('.canvas-size').textContent=px.map(Math.round).join(separator);
+    row.querySelector('.ppt-size').textContent=pt.join(separator);
+  });
+  probe.remove();
+}
+// 字符墨迹必须处于扣除内边距的内容区内，不能仅凭 scrollWidth 判断“不挤”。
+function cellTextFits(cell,scale) {
+  const rect=cell.getBoundingClientRect(), css=getComputedStyle(cell);
+  const left=rect.left+(parseFloat(css.paddingLeft)+parseFloat(css.borderLeftWidth))*scale;
+  const right=rect.right-(parseFloat(css.paddingRight)+parseFloat(css.borderRightWidth))*scale;
+  const walker=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT), range=document.createRange();
+  let node;
+  while((node=walker.nextNode())) {
+    if(!node.textContent.trim()) continue;
+    range.selectNodeContents(node);
+    if([...range.getClientRects()].some(r=>r.left<left-.6*scale || r.right>right+.6*scale)) return false;
+  }
+  return true;
+}
+// 密集比较表使用 PowerPoint 等效 pt 基准，同时联动字号、行高与单元格间距。
+function adjustTables() {
+  const ptPerPx=pptPtPerPx();
+  document.querySelectorAll('[data-adaptive-table]').forEach(table => {
+    const wrap=table.closest('.comparison-wrap');
+    if (!wrap?.clientWidth || !wrap.clientHeight) return;
+    const stops=[...new Set((table.dataset.ptStops || '10,11,12').split(',').map(Number).filter(n=>Number.isInteger(n)&&n>8&&n<14&&[10,11,12].includes(n)))].sort((a,b)=>b-a);
+    if(!stops.length) stops.push(12,11,10);
+    const low=stops.at(-1), high=stops[0];
+    const cells=[...table.querySelectorAll('th,td')];
+    const measure=size=>{
+      const ratio=(size-low)/(high-low || 1);
+      table.style.setProperty('--table-font', (size/ptPerPx)+'px');
+      table.style.setProperty('--cell-pad-y', (6+8*ratio)+'px');
+      table.style.setProperty('--cell-pad-x', '.5em');
+      table.style.setProperty('--table-line-height', String(1.2+.2*ratio));
+      const scale=table.closest('.slide').getBoundingClientRect().width/1600;
+      return table.offsetHeight<=wrap.clientHeight+2 && table.offsetWidth<=wrap.clientWidth+2 && cells.every(cell=>cell.scrollWidth<=cell.clientWidth+2 && cell.scrollHeight<=cell.clientHeight+2 && cellTextFits(cell,scale));
+    };
+    let chosen=low, fitted=false;
+    for (const size of stops) {
+      chosen=size;
+      fitted=measure(size);
+      if (fitted) break;
+    }
+    table.dataset.fontPt=String(chosen);
+    table.dataset.overflow=String(!fitted);
+    table.closest('.slide-content').querySelectorAll('[data-table-size]').forEach(el=>el.textContent=chosen+'pt');
+  });
+}
+function setCurrent(n) {
+  currentPage = Math.max(1, Math.min(TOTAL_PAGES, n));
+  pages.forEach((page, i) => page.classList.toggle('selected', i + 1 === currentPage));
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const active = +link.dataset.page === currentPage;
+    link.classList.toggle('current', active);
+    if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+  });
+  document.getElementById('count').textContent = String(currentPage).padStart(2, '0') + ' / ' + String(TOTAL_PAGES).padStart(2, '0');
+}
+function gotoPage(n,anchorId) {
+  if(showSession && Math.max(1,Math.min(TOTAL_PAGES,n))!==currentPage) resetShowZoom();
+  setCurrent(n); fit();
+  history.replaceState(null, '', '#' + (anchorId || pages[currentPage - 1].id));
+  if (!document.body.classList.contains('present')) pages[currentPage - 1].scrollIntoView({behavior:'instant', block:'start'});
+}
+function resolveHash() {
+  let id;
+  try {id=decodeURIComponent(location.hash.slice(1));} catch {return null;}
+  const target=document.getElementById(id), page=target?.closest('article.page');
+  return page ? {number:+page.dataset.page,id} : null;
+}
+function setViewMode(mode,{navigate=true}={}) {
+  if (!['scroll','grid','present'].includes(mode)) mode='scroll';
+  if (mode !== 'present') {
+    scrollView=mode;
+    document.body.dataset.scrollView=mode;
+  }
+  document.body.classList.toggle('present', mode==='present');
+  document.body.classList.toggle('grid-view', mode==='grid');
+  document.getElementById('view-mode').value=mode;
+  document.getElementById('grid-control').hidden=mode!=='grid';
+  setGridColumns(document.body.dataset.gridColumns || 2,{navigate:false});
+  pages.forEach(page=>{
+    const frame=page.querySelector('.frame');
+    if(mode==='grid') frame.title='单击选中，双击进入单页展示';
+    else frame.removeAttribute('title');
+  });
+  setCurrent(currentPage);
+  if(navigate) gotoPage(currentPage);
+  if(mode==='present' && document.activeElement===document.getElementById('view-mode')) document.activeElement.blur();
+}
+function setGridColumns(value,{navigate=true}={}) {
+  const columns=Math.max(1,Math.min(6,parseInt(value,10)||2));
+  document.body.dataset.gridColumns=String(columns);
+  document.getElementById('grid-columns').value=String(columns);
+  document.querySelector('main').style.setProperty('--grid-columns', columns);
+  fit();
+  if(navigate) gotoPage(currentPage);
+}
+function togglePresent() {
+  setViewMode(document.body.classList.contains('present') ? scrollView : 'present');
+}
+async function startSlideshow() {
+  if(showSession) return;
+  showSession={mode:document.body.classList.contains('present') ? 'present' : scrollView,scrollView,columns:document.body.dataset.gridColumns,editing:document.body.classList.contains('edit-on')};
+  if(showSession.editing) toggleEdit();
+  document.body.classList.add('show-on');
+  resetShowZoom();
+  setViewMode('present');
+  document.activeElement?.blur();
+  showWheelTotal=0;showWheelLock=0;
+  try {
+    if(!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+    else if(!document.fullscreenElement) toast('当前环境不支持浏览器全屏，已使用窗口放映；双击可预览，Esc 退出');
+  } catch {
+    toast('浏览器未允许全屏，已使用窗口放映；双击可预览，Esc 退出');
+  }
+  if(showSession && document.fullscreenElement && navigator.keyboard?.lock) {
+    navigator.keyboard.lock(['Escape']).then(()=>{
+      if(!showSession) navigator.keyboard.unlock();
+    }).catch(()=>{});
+  }
+  fit();
+}
+function stopSlideshow() {
+  if(!showSession) return;
+  resetShowZoom();navigator.keyboard?.unlock?.();
+  const previous=showSession;showSession=null;
+  document.body.classList.remove('show-on','show-overview');
+  scrollView=previous.scrollView;document.body.dataset.scrollView=scrollView;
+  document.body.dataset.gridColumns=previous.columns;
+  setViewMode(previous.mode);
+  if(previous.editing) toggleEdit();
+  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+}
+function showSlideOverview() {
+  if(!showSession) return;
+  resetShowZoom();
+  document.body.classList.add('show-overview');
+  setViewMode('grid');setGridColumns(4);
+  document.activeElement?.blur();
+}
+function resumeShowAt(n) {
+  resetShowZoom();
+  document.body.classList.remove('show-overview');
+  setCurrent(n);setViewMode('present');
+  showWheelTotal=0;showWheelLock=performance.now()+250;
+  document.activeElement?.blur();
+}
+function applyShowTransform() {
+  const frame=pages[currentPage-1].querySelector('.frame');
+  const limitX=Math.max(0,(frame.clientWidth*showZoom-innerWidth)/2), limitY=Math.max(0,(frame.clientHeight*showZoom-innerHeight)/2);
+  showPanX=Math.max(-limitX,Math.min(limitX,showPanX));showPanY=Math.max(-limitY,Math.min(limitY,showPanY));
+  frame.style.setProperty('--show-zoom',showZoom);
+  frame.style.setProperty('--show-pan-x',showPanX+'px');frame.style.setProperty('--show-pan-y',showPanY+'px');
+  document.body.classList.toggle('show-zoomed',showZoom>1);
+}
+function endShowDrag() {
+  if(showDrag) {try {showDrag.target.releasePointerCapture(showDrag.id);} catch {}}
+  showDrag=null;document.body.classList.remove('show-dragging');
+}
+function resetShowZoom() {
+  endShowDrag();showZoom=1;showPanX=0;showPanY=0;showSuppressClick=false;
+  document.body.classList.remove('show-zoomed');
+  pages.forEach(page=>{const style=page.querySelector('.frame').style;['--show-zoom','--show-pan-x','--show-pan-y'].forEach(name=>style.removeProperty(name));});
+}
+function zoomShowAt(delta,x,y) {
+  const next=Math.max(1,Math.min(4,showZoom*Math.exp(-delta*.002)));
+  if(next<1.01) {resetShowZoom();return;}
+  const rect=pages[currentPage-1].querySelector('.frame').getBoundingClientRect();
+  const centerX=rect.left+rect.width/2-showPanX, centerY=rect.top+rect.height/2-showPanY;
+  showPanX=x-centerX-(x-centerX-showPanX)*next/showZoom;
+  showPanY=y-centerY-(y-centerY-showPanY)*next/showZoom;
+  showZoom=next;applyShowTransform();
+}
+document.querySelector('main').addEventListener('pointerdown',event=>{
+  if(!showSession || showZoom<=1 || document.body.classList.contains('show-overview') || event.button!==0) return;
+  event.preventDefault();
+  showSuppressClick=false;
+  showDrag={id:event.pointerId,target:event.currentTarget,x:event.clientX,y:event.clientY,panX:showPanX,panY:showPanY};
+  event.currentTarget.setPointerCapture(event.pointerId);document.body.classList.add('show-dragging');
+});
+document.querySelector('main').addEventListener('pointermove',event=>{
+  if(!showDrag || event.pointerId!==showDrag.id) return;
+  if(Math.hypot(event.clientX-showDrag.x,event.clientY-showDrag.y)>4) showSuppressClick=true;
+  showPanX=showDrag.panX+event.clientX-showDrag.x;showPanY=showDrag.panY+event.clientY-showDrag.y;applyShowTransform();
+});
+['pointerup','pointercancel','lostpointercapture'].forEach(type=>document.querySelector('main').addEventListener(type,endShowDrag));
+window.addEventListener('blur',endShowDrag);
+document.addEventListener('fullscreenchange',()=>{
+  if(showSession && !document.fullscreenElement && showZoom>1) {
+    resetShowZoom();fit();toast('已恢复原始大小；浏览器已退出原生全屏，再按 Esc 退出窗口放映');
+  } else if(showSession && !document.fullscreenElement) stopSlideshow();
+  else fit();
+});
+document.addEventListener('wheel',event=>{
+  if(!showSession || document.getElementById('print-guide').open) return;
+  if(document.body.classList.contains('show-overview')) {if(event.ctrlKey) event.preventDefault();return;}
+  event.preventDefault();
+  if(event.ctrlKey) {
+    const delta=event.deltaY*(event.deltaMode===1 ? 16 : event.deltaMode===2 ? innerHeight : 1);
+    showWheelTotal=0;zoomShowAt(delta,event.clientX,event.clientY);return;
+  }
+  const now=performance.now();
+  if(now<showWheelLock) return;
+  const delta=event.deltaY*(event.deltaMode===1 ? 16 : event.deltaMode===2 ? innerHeight : 1);
+  if(now-showWheelTime>180 || Math.sign(delta)!==Math.sign(showWheelTotal)) showWheelTotal=0;
+  showWheelTime=now;showWheelTotal+=delta;
+  if(Math.abs(showWheelTotal)<50) return;
+  gotoPage(currentPage+(showWheelTotal>0 ? 1 : -1));showWheelTotal=0;showWheelLock=now+420;
+},{passive:false});
+function toast(message) {
+  const el = document.getElementById('toast');
+  el.textContent = message; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+function toggleNotes() {
+  const visible = document.body.classList.toggle('show-notes');
+  document.body.classList.toggle('notes-hidden', !visible);
+  document.getElementById('notes-btn').classList.toggle('active', visible);
+  document.getElementById('notes-btn').setAttribute('aria-pressed', String(visible));
+  document.querySelectorAll('.notes').forEach(note => note.open = visible);
+}
+function toggleEdit() {
+  const on = document.body.classList.toggle('edit-on');
+  if(on) rememberOriginalTextColors();
+  document.querySelectorAll('[data-edit]').forEach(el => el.contentEditable = String(on));
+  const button = document.getElementById('edit-btn');
+  button.classList.toggle('active', on); button.setAttribute('aria-pressed', String(on));
+  document.getElementById('text-tools').hidden=!on;
+  savedTextSelection=null; updateTextTools(); fit();
+  toast(on ? '选中文字后可加粗、取消加粗或修改颜色；修改后请检查排版并保存HTML' : '已关闭文字编辑');
+}
+// 只格式化同一个可编辑文本块内的选区；保留原生编辑撤销记录及现有链接。
+let savedTextSelection=null;
+function rememberOriginalTextColors() {
+  // 基准随 HTML 保存；再次编辑时不能把手动改色误记成原色。
+  document.querySelectorAll('[data-edit]:not([data-original-colors])').forEach(host=>{
+    const elements=[host,...host.querySelectorAll('*')];
+    const colors=elements.map(el=>getComputedStyle(el).color);
+    elements.forEach((el,index)=>el.style.setProperty('--original-text-color',colors[index]));
+    host.setAttribute('data-original-colors','');
+  });
+}
+function selectedTextColor(range,host) {
+  const values=new Set(), walker=document.createTreeWalker(host,NodeFilter.SHOW_TEXT);
+  while(walker.nextNode()) {
+    const node=walker.currentNode;
+    if(!node.length || !range.intersectsNode(node) || (node===range.endContainer && range.endOffset===0) || (node===range.startContainer && range.startOffset===node.length)) continue;
+    const css=getComputedStyle(node.parentElement), color=css.color.replace(/\s/g,'').toLowerCase();
+    const original=css.getPropertyValue('--original-text-color').replace(/\s/g,'').toLowerCase();
+    values.add(color===original ? 'original' : color==='rgb(0,91,148)' ? 'blue' : color==='rgb(163,20,24)' ? 'red' : '');
+  }
+  return values.size===1 ? [...values][0] : '';
+}
+function editableSelection(range) {
+  if(!range || range.collapsed || !document.body.classList.contains('edit-on')) return null;
+  const host=node=>(node.nodeType===Node.ELEMENT_NODE ? node : node.parentElement)?.closest('[data-edit][contenteditable="true"]');
+  const first=host(range.startContainer), last=host(range.endContainer);
+  return first && first===last && first.contains(range.commonAncestorContainer) ? first : null;
+}
+function updateTextTools() {
+  const selection=getSelection(), range=selection.rangeCount ? selection.getRangeAt(0) : null;
+  const valid=editableSelection(range);
+  const inTools=document.activeElement?.closest('#text-tools');
+  if(valid) savedTextSelection=range.cloneRange();
+  else if(!inTools) savedTextSelection=null;
+  const usable=editableSelection(savedTextSelection);
+  document.querySelectorAll('[data-format]').forEach(button=>button.disabled=!usable);
+  const colorControl=document.getElementById('text-color');
+  colorControl.disabled=!usable;
+  if(valid) {
+    colorControl.value=selectedTextColor(range,valid);
+  }
+  const bold=!!valid && document.queryCommandState('bold');
+  document.getElementById('text-bold').setAttribute('aria-pressed',String(bold));
+  document.getElementById('text-bold').classList.toggle('active',bold);
+}
+function formatSelectedText(format) {
+  const host=editableSelection(savedTextSelection);
+  if(!host) {toast('请先在同一个文本块内选中要修改的文字');return;}
+  const range=savedTextSelection.cloneRange();
+  host.focus({preventScroll:true});
+  const selection=getSelection(); selection.removeAllRanges(); selection.addRange(range);
+  // 使用原生编辑命令保留撤销栈；颜色按文本片段处理，以兼容链接及混合原色。
+  document.execCommand('styleWithCSS',false,true);
+  if(format==='bold') document.execCommand('bold',false);
+  else {
+    const colors=[], walker=document.createTreeWalker(host,NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()) {
+      const node=walker.currentNode;
+      if(!node.length || !range.intersectsNode(node) || (node===range.endContainer && range.endOffset===0) || (node===range.startContainer && range.startOffset===node.length)) continue;
+      colors.push(getComputedStyle(node.parentElement).getPropertyValue('--original-text-color').trim());
+    }
+    const fragment=range.cloneContents(), textWalker=document.createTreeWalker(fragment,NodeFilter.SHOW_TEXT), nodes=[];
+    while(textWalker.nextNode()) if(textWalker.currentNode.length) nodes.push(textWalker.currentNode);
+    nodes.forEach((node,index)=>{
+      const span=document.createElement('span');
+      span.style.setProperty('--original-text-color',colors[index]);
+      span.style.color=format==='original' ? 'var(--original-text-color)' : format==='blue' ? '#005B94' : '#A31418';
+      node.replaceWith(span);span.append(node);
+    });
+    const wrapper=document.createElement('span'), marker='selection-'+Date.now();
+    wrapper.setAttribute('data-format-selection',marker);wrapper.append(fragment);
+    // insertHTML 是一次原生编辑事务，Ctrl+Z 可一次撤销整个选区的改色。
+    document.execCommand('insertHTML',false,wrapper.outerHTML);
+    const inserted=host.querySelector('[data-format-selection="'+marker+'"]');
+    if(inserted) {
+      selection.removeAllRanges();const restored=document.createRange();restored.selectNodeContents(inserted);selection.addRange(restored);
+      inserted.removeAttribute('data-format-selection');
+    }
+  }
+  updateTextTools();
+}
+document.addEventListener('selectionchange',updateTextTools);
+document.getElementById('text-tools').addEventListener('mousedown',event=>{if(event.target.closest('button')) event.preventDefault();});
+document.getElementById('text-tools').addEventListener('click',event=>{
+  const button=event.target.closest('[data-format]'); if(button && !button.disabled) formatSelectedText(button.dataset.format);
+});
+document.getElementById('text-color').addEventListener('change',event=>formatSelectedText(event.target.value));
+async function copyCurrentPage() {
+  const text = pages[currentPage - 1].querySelector('.slide').innerText;
+  try { await navigator.clipboard.writeText(text); }
+  catch {
+    const input = document.createElement('textarea'); input.value = text;
+    input.style.position = 'fixed'; input.style.opacity = '0'; document.body.append(input); input.select();
+    const copied = document.execCommand('copy'); input.remove();
+    if (!copied) { toast('复制失败，请手动选择文字复制'); return; }
+  }
+  toast('已复制第 ' + currentPage + ' 页文字');
+}
+
+// 用实际字符位置检查末行，覆盖正文、表格、图注与来源；不自动改写研究内容。
+function textLines(element) {
+  const lines=[], walker=document.createTreeWalker(element,NodeFilter.SHOW_TEXT), range=document.createRange();
+  const scale=element.closest('.slide').getBoundingClientRect().width/1600;
+  const tolerance=parseFloat(getComputedStyle(element).fontSize)*scale*.55;
+  let node;
+  while((node=walker.nextNode())) {
+    if(node.parentElement.closest('math,mjx-container,.math-render')) continue;
+    let offset=0;
+    for(const char of node.textContent) {
+      range.setStart(node,offset); offset+=char.length; range.setEnd(node,offset);
+      if(!char.trim()) continue;
+      const rect=range.getBoundingClientRect();
+      if(!rect.width || !rect.height) continue;
+      const y=rect.top+rect.height/2;
+      let line=lines.find(line=>Math.abs(line.y-y)<tolerance);
+      if(!line) {line={y,text:''};lines.push(line);}
+      line.text+=char;
+    }
+  }
+  return lines.sort((a,b)=>a.y-b.y);
+}
+// 可供 AI / 浏览器自动化调用。检查隐藏页前临时切回总览，再恢复原视图。
+function checkLayout() {
+  const wasPresent = document.body.classList.contains('present');
+  const wasGrid = document.body.classList.contains('grid-view');
+  const oldPage = currentPage;
+  const oldScroll = scrollY;
+  const wasShow=document.body.classList.contains('show-on'), wasOverview=document.body.classList.contains('show-overview');
+  document.body.classList.remove('show-on','show-overview');
+  document.body.classList.remove('present','grid-view'); fit();
+  const issues = [];
+  const add = (page, reason, element) => issues.push({page:+page.dataset.page, reason, text:element?.textContent?.trim().slice(0,72) || element?.tagName || ''});
+  let activeChapter = 0, activeName = '', appendixStarted = false, tocSeen = false;
+  const chapterEntries = [];
+  pages.forEach(page => {
+    // 章节顺序也属于模板规范，避免重排后出现 02 → 03 → 02 或把文献并入计划。
+    if (page.querySelector('.toc')) {
+      if (activeChapter || appendixStarted) add(page, '目录应置于全部正文章节之前', page.querySelector('.toc'));
+      tocSeen = true;
+    }
+    const transition = page.querySelector('.chapter-num');
+    const index = page.querySelector('.section-line .section-index');
+    const code = (transition || index)?.textContent.trim();
+    const chapterName = transition ? page.querySelector('.chapter-title')?.textContent.trim() : index?.nextElementSibling?.textContent.trim();
+    if (code === '00') {
+      if (tocSeen || activeChapter || appendixStarted) add(page, '00 整体规范应放在目录前', index);
+      if (chapterName !== '整体规范' || page.dataset.group !== '00 整体规范') add(page, '规范页的左上标签与侧栏应统一为 00 整体规范', index);
+    } else if (/^\d+$/.test(code || '')) {
+      const number = Number(code);
+      if (appendixStarted) add(page, '正文章节不能排在附录之后', transition || index);
+      if (transition) {
+        if (number !== activeChapter + 1) add(page, '章节过渡页应从 01 起连续递增', transition);
+        activeChapter = number; activeName = chapterName;
+        chapterEntries.push({code, name:chapterName});
+      } else if (number !== activeChapter || chapterName !== activeName) {
+        add(page, '正文须紧随所属章节过渡页，章节号与名称保持一致', index);
+      }
+      if (page.dataset.group !== code + ' ' + chapterName) add(page, '侧栏分组须与当前章节号和名称一致', transition || index);
+    } else if (code === '附录') {
+      appendixStarted = true;
+      if (page.dataset.group !== '附录') add(page, '参考资料须独立归入附录分组', index);
+    }
+    const slide = page.querySelector('.slide'), rect = slide.getBoundingClientRect();
+    const scale = rect.width / 1600;
+    const box = el => { const r = el.getBoundingClientRect(); return {left:(r.left-rect.left)/scale,top:(r.top-rect.top)/scale,right:(r.right-rect.left)/scale,bottom:(r.bottom-rect.top)/scale,width:r.width/scale,height:r.height/scale}; };
+    const visible = el => getComputedStyle(el).display !== 'none' && el.getClientRects().length && el.getBoundingClientRect().width > 0;
+    const content = slide.querySelector('.slide-content');
+    const contentBox = content && box(content);
+    const footer = slide.querySelector('.slide-footer');
+    const title = slide.querySelector('.slide-header h2');
+    if (title && title.getBoundingClientRect().height / scale > 62) add(page, '正文标题超过一行，请精简或拆页', title);
+    if (title && content) {
+      const mainSize=parseFloat(getComputedStyle(title).fontSize);
+      content.querySelectorAll('p,h3,h4,.font-sample,.takeaway').forEach(text=>{
+        if(parseFloat(getComputedStyle(text).fontSize)>mainSize+.1) add(page,'正文文字与强调字不能大于页面主标题',text);
+      });
+      content.querySelectorAll('.font-sample').forEach(sample=>{
+        if(parseFloat(getComputedStyle(sample).fontSize)>=mainSize-.1) add(page,'正文强调字应低于页面主标题的字号层级',sample);
+      });
+      content.querySelectorAll('.text-block,.comparison-note-block').forEach(block=>{
+        const heading=block.querySelector(':scope > h3,:scope > h4');
+        if(!heading) return;
+        const headingSize=parseFloat(getComputedStyle(heading).fontSize);
+        block.querySelectorAll(':scope > p,:scope > .points > li').forEach(copy=>{
+          if(parseFloat(getComputedStyle(copy).fontSize)>=headingSize-.1) add(page,'板块标题应比内容高一个字号层级，不能只靠加粗',heading);
+        });
+      });
+      content.querySelectorAll('.comparison-note').forEach(note=>{
+        const blocks=[...note.children];
+        if(blocks.length!==2) return;
+        const left=box(blocks[0]), right=box(blocks[1]);
+        if(Math.abs(left.width-right.width)>1 || Math.abs((left.left+right.right)/2-800)>1 || Math.abs(left.top-right.top)>1) add(page,'并列说明应等宽、顶端对齐，并相对画布中线对称排布',note);
+        if(right.left-left.right<80) add(page,'无底色并列说明之间留白不足，请拉开文字组间距',note);
+        const table=note.closest('.comparison-layout')?.querySelector('.adaptive-table');
+        if(table && box(note).top-box(table).bottom<23) add(page,'表格与下方说明至少留出 24px 间距',note);
+      });
+      // 检查实际可见内容的下沿，而非仅比较已经拉伸的空容器。
+      const bottomPairs=[
+        ['.type-guide .unit-note','.type-guide + .stack > .small:last-child'],
+        ['.two-col:has(> .image-notes) > .figure','.image-notes > .soft-block:last-child'],
+        ['.summary-list > li:last-child','.discussion-note'],
+        ['.profile-identity','.profile-sections > .profile-section:last-child']
+      ];
+      bottomPairs.forEach(selectors=>{
+        const pair=selectors.map(selector=>content.querySelector(selector));
+        if(pair.every(Boolean) && Math.abs(box(pair[0]).bottom-box(pair[1]).bottom)>1) add(page,'并列内容的实际下沿未对齐，请检查末块和下内边距',pair[1]);
+      });
+      const profileCaptions=[...content.querySelectorAll('.profile-metrics span,.profile-research .points > li:last-child')].filter(element=>element.textContent.trim());
+      if(profileCaptions.length>1) {
+        const bottoms=profileCaptions.map(element=>{const range=document.createRange();range.selectNodeContents(element);return Math.max(...[...range.getClientRects()].map(r=>r.bottom));});
+        if((Math.max(...bottoms)-Math.min(...bottoms))/scale>1) add(page,'作者简介左右底部同字号文字的末行未对齐',profileCaptions.at(-1));
+      }
+    }
+    if (slide.querySelector('.slide-header .lead')) add(page, '正文首句应位于 slide-content 内', title);
+    slide.querySelectorAll('[data-adaptive-table]').forEach(table => {
+      if (table.dataset.overflow==='true') add(page, '比较表在 12 / 11 / 10pt 档位内仍放不下，请拆分场景或指标', table);
+      table.querySelectorAll('th,td').forEach(cell=>{
+        const css=getComputedStyle(cell), em=parseFloat(css.fontSize);
+        if(parseFloat(css.paddingLeft)<em/2-.1 || parseFloat(css.paddingRight)<em/2-.1) add(page,'表格左右内边距至少各为半个字符',cell);
+        if(!cellTextFits(cell,scale)) add(page,'单元格文字进入内边距，请调整列宽或拆表',cell);
+      });
+    });
+    slide.querySelectorAll('.history-timeline').forEach(timeline=>{
+      const stages=[...timeline.querySelectorAll('.history-stage')], images=[...timeline.querySelectorAll('.history-image')];
+      if(stages.length!==4 || images.length!==4) add(page,'四阶段研究现状应有四个阶段和四张图片',timeline);
+      const sizes=images.map(image=>box(image));
+      if(sizes.length && sizes.some(size=>Math.abs(size.width-sizes[0].width)>1 || Math.abs(size.height-sizes[0].height)>1 || Math.abs(size.top-sizes[0].top)>1 || Math.abs(size.bottom-sizes[0].bottom)>1)) add(page,'四阶段图片必须同宽同高、上下沿对齐',timeline);
+      const track=timeline.querySelector('.history-track');
+      if(track && stages.some(stage=>box(track).top-box(stage).bottom<10)) add(page,'时间轴须独占一行，并与阶段卡片保留间隔',track);
+      stages.forEach((stage,index)=>{
+        const heading=stage.querySelector('.history-heading'), image=stage.querySelector('.history-image'), copy=stage.querySelector('.history-copy');
+        const marker=track?.querySelectorAll('.history-marker')[index], dot=marker?.querySelector('.history-dot');
+        if(heading && image && copy && (Math.abs(box(image).top-box(heading).bottom-16)>1 || Math.abs(box(copy).top-box(image).bottom-16)>1)) add(page,'研究现状的年份、图片和文字块之间须统一留16px空隙',stage);
+        if(copy && dot && Math.abs(box(dot).left+box(dot).width/2-box(copy).left)>1) add(page,'时间轴圆心须与对应文字框左沿对齐',marker);
+        if(dot && (box(dot).left-2<box(timeline).left+12 || box(dot).right+2>box(timeline).right-12)) add(page,'时间轴圆点必须完整位于浅色箭头内，并保留两端留白',marker);
+        if(heading && Math.abs(box(stage).top+parseFloat(getComputedStyle(stage,'::before').top)-box(heading).top)>1) add(page,'竖向连接线顶端应与年份色块顶端齐平',stage);
+        if(copy && (getComputedStyle(copy).textAlign!=='justify' || getComputedStyle(copy).textAlignLast!=='left')) add(page,'研究现状段落须两端对齐、末行左对齐',copy);
+        if(heading?.querySelector('.history-title') || !marker?.querySelector('.history-title')) add(page,'阶段标题应位于底部浅色箭头，上方仅保留年份',stage);
+      });
+    });
+    slide.querySelectorAll('.bibliography-table').forEach(table=>{
+      if(table.querySelector('thead,th')) add(page,'参考文献表格不应有表头',table);
+      table.querySelectorAll('tr').forEach(row=>{
+        if(row.cells.length!==2 || !/^\[\d+\]$/.test(row.cells[0]?.textContent.trim())) add(page,'参考文献须采用独立序号和完整条目两列',row);
+        [...row.cells].forEach((cell,index)=>{
+          const css=getComputedStyle(cell);
+          if(css.verticalAlign!=='top' || (index===0 ? css.textAlign!=='left' : css.textAlign!=='justify' || css.textAlignLast!=='left')) add(page,'参考文献须顶端对齐，序号左对齐，条目两端对齐且末行左对齐',cell);
+        });
+        if(/[，。；：（）【】“”《》]/u.test(row.cells[1]?.textContent || '')) add(page,'参考文献须统一使用英文半角标点',row.cells[1]);
+      });
+    });
+    slide.querySelectorAll('.profile-history').forEach(table=>{
+      const bodyCell=table.querySelector('tbody td:not(.profile-spacer)'), heading=table.querySelector('thead th');
+      const bodySize=bodyCell && parseFloat(getComputedStyle(bodyCell).fontSize);
+      const explanation=slide.querySelector('.profile-section-body .points');
+      if(bodyCell && explanation && Math.abs(bodySize-parseFloat(getComputedStyle(explanation).fontSize))>.1) add(page,'履历表正文应与学术任职说明文字同字号',bodyCell);
+      if(heading && bodyCell && parseFloat(getComputedStyle(heading).fontSize)<=bodySize) add(page,'履历表头字号应高于正文一档',heading);
+      [...table.rows].forEach(row=>{
+        if(row.cells.length!==5) {add(page,'履历表须为五列，第 2／4 列留作半字符空白',row);return;}
+        [...row.cells].forEach((cell,i)=>{
+          const css=getComputedStyle(cell);
+          if(i===1 || i===3) {
+            if(cell.textContent.trim() || Math.abs(box(cell).width-bodySize/2)>1) add(page,'履历表空白列应为空且仅宽半个正文字符',cell);
+            if(['Top','Right','Bottom','Left'].some(side=>parseFloat(css['border'+side+'Width'])>0 || parseFloat(css['padding'+side])>0)) add(page,'履历表空白列不能有表线或内边距',cell);
+          } else {
+            if(css.textAlign!=='center' || css.verticalAlign!=='top') add(page,'履历表文字须水平居中、顶端对齐',cell);
+            if(cell.tagName==='TH' && parseFloat(css.borderBottomWidth)<1) add(page,'履历表三个内容表头下方应分别有横线',cell);
+          }
+        });
+      });
+    });
+    slide.querySelectorAll('.formula-card').forEach(card=>{
+      const label=card.querySelector(':scope > .equation-label'), body=card.querySelector(':scope > .formula-body');
+      if (!label || !body || !body.querySelector('.equation-explanation')) {add(page,'每个公式需要题目条、浅色公式框和正文解释',card);return;}
+      if (Math.abs(box(label).bottom-box(body).top)>1 || Math.abs(box(label).width-box(body).width)>1) add(page,'公式题目条与浅色框应同宽并垂直贴合',card);
+      if (parseFloat(getComputedStyle(label).fontSize)<=parseFloat(getComputedStyle(body.querySelector('.equation-explanation')).fontSize)) add(page,'公式题目字号应高于正文解释',label);
+    });
+    slide.querySelectorAll('.symbols dt').forEach(symbol=>{
+      if (!symbol.querySelector('var, math, .math-symbol[data-tex]')) add(page,'符号表变量应使用斜体 var 或同字体数学对象',symbol);
+      symbol.querySelectorAll('var').forEach(variable=>{if(getComputedStyle(variable).fontStyle!=='italic') add(page,'符号表变量应保持斜体',variable);});
+    });
+    slide.querySelectorAll('.group-title').forEach(group=>{
+      const items=[...group.parentElement.querySelectorAll('.item-title')];
+      if(items.some(item=>parseFloat(getComputedStyle(group).fontSize)<=parseFloat(getComputedStyle(item).fontSize))) add(page,'分组标题字号应高于分项标题',group);
+    });
+    if (content) {
+      content.querySelectorAll('.stack,.summary-panel,.formula-body,.formula-sheet,.summary-list,.profile-identity,.profile-sections').forEach(container=>{
+        const blocks=[...container.children].filter(visible);
+        for(let i=1;i<blocks.length;i++) if(box(blocks[i]).top<box(blocks[i-1]).bottom-1) add(page,'相邻内容发生遮盖，请恢复自然排布并检查实际高度',blocks[i]);
+      });
+      [...content.querySelectorAll('*')].filter(visible).forEach(el => {
+        // 跳过旧版本数学 DOM 的内部节点，当前 SVG 字形由图片容器检查。
+        if (el.closest('mjx-container') || el.closest('math') || ['COL','COLGROUP'].includes(el.tagName)) return;
+        const r = box(el);
+        if (r.left < contentBox.left - 2 || r.right > contentBox.right + 2 || r.top < contentBox.top - 2 || r.bottom > contentBox.bottom + 2) add(page, '内容超出正文安全区', el);
+        if (el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 3) add(page, '内容横向溢出容器', el);
+        // rowspan 单元格跨行时，tr 的 scrollHeight 会包含后续行，属于正常表格布局。
+        if (!['TR','THEAD','TBODY','TFOOT'].includes(el.tagName) && el.clientHeight > 0 && el.scrollHeight > el.clientHeight + 3) add(page, '内容纵向溢出容器', el);
+      });
+      const children = [...content.children].filter(visible);
+      for (let i=1; i<children.length; i++) if (box(children[i]).top < box(children[i-1]).bottom - 2) add(page, '正文块发生重叠', children[i]);
+      if (footer && contentBox.bottom > box(footer).top - 12) add(page, '正文区与页脚间距不足', footer);
+    }
+    if (title) {
+      const logo = slide.querySelector('.slide-logo');
+      if (logo && box(title).right > box(logo).left - 15) add(page, '标题与校徽间距不足', title);
+      if (logo) {
+        const header = slide.querySelector('.slide-header'), r = box(logo);
+        const trim = parseFloat(getComputedStyle(slide).getPropertyValue('--top-trim'));
+        const rule = parseFloat(getComputedStyle(slide).getPropertyValue('--header-rule'));
+        if (Math.abs((r.top - trim) - (box(header).bottom - rule - r.bottom)) > 1) add(page, '校徽在上边缘与分割线之间未垂直居中', logo);
+      }
+    }
+    if (footer) {
+      footer.querySelectorAll('span').forEach(el => {
+        const r=box(el), f=box(footer);
+        if (r.bottom > f.bottom + 1 || r.top < f.top - 1 || el.scrollWidth > el.clientWidth + 3) add(page, '页脚文字越界，请缩短来源说明', el);
+      });
+    }
+    slide.querySelectorAll('.cover-band h1, .cover-band p, .cover-info, .chapter-transition-inner, .slide-logo, .cover-top img').forEach(el => {
+      const r = box(el);
+      if (r.left < 56 || r.right > 1544 || r.top < 0 || r.bottom > 900) add(page, '元素超出页面安全边距', el);
+      if (el.scrollWidth > el.clientWidth + 3) add(page, '元素文字超出容器', el);
+    });
+    slide.querySelectorAll('img').forEach(img => { if (!img.complete || !img.naturalWidth) add(page, '图片尚未加载或路径错误', img); });
+    slide.querySelectorAll('.math-expression,.math-symbol').forEach(expression=>{
+      const alternatives=[...expression.querySelectorAll(':scope > .formula-image,:scope > .math-fallback,:scope > .math-render')].filter(visible);
+      if(alternatives.length!==1) add(page,'每个数学对象仅应有一份可见结果，请删除重复渲染层',expression);
+    });
+    slide.querySelectorAll('a[href^="#"]').forEach(link=>{
+      if(!document.getElementById(link.getAttribute('href').slice(1))?.closest('article.page')) add(page,'页内引用链接缺少有效目标',link);
+    });
+    slide.querySelectorAll('p,h1,h2,h3,h4,dd,figcaption,th,td,.footer-source,.reference-use,li').forEach(element=>{
+      if(!visible(element) || element.closest('.code-lines,math,mjx-container') || element.querySelector('p,h1,h2,h3,h4,li')) return;
+      const lines=textLines(element), last=lines.at(-1)?.text.replace(/[\s\p{P}\p{S}]/gu,'') || '';
+      if(lines.length>1 && /\p{Script=Han}/u.test(last) && [...last].length<=3) add(page,'末行仅余一至三个字符，请适量改写或按语义分行',element);
+    });
+    // 检查真实文字墨迹，避免固定高度或溢出隐藏掩盖长文本。
+    const walker = document.createTreeWalker(slide, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!node.textContent.trim() || !parent || !visible(parent) || parent.closest('mjx-container, math, .math-fallback')) continue;
+      const range = document.createRange(); range.selectNodeContents(node);
+      for (const r of range.getClientRects()) {
+        if (r.left < rect.left + 55*scale || r.right > rect.left + 1545*scale || r.top < rect.top || r.bottom > rect.bottom) { add(page, '文字超出页面安全边距', parent); break; }
+      }
+    }
+  });
+  pages.filter(page=>page.querySelector('.toc')).forEach(page=>{
+    const entries=[...page.querySelectorAll('.toc-item')];
+    entries.forEach((entry,i)=>{
+      const chapter=chapterEntries[i];
+      if (!chapter || entry.querySelector('strong')?.textContent.trim()!==chapter.code || entry.querySelector('h3')?.textContent.trim()!==chapter.name) add(page,'目录的章节号、名称和顺序须与实际章节一致',entry);
+    });
+    if(entries.length!==chapterEntries.length) add(page,'目录项目数量须与正文章节数量一致',page.querySelector('.toc'));
+  });
+  if (wasPresent) document.body.classList.add('present');
+  if (wasGrid) document.body.classList.add('grid-view');
+  document.body.classList.toggle('show-on',wasShow);document.body.classList.toggle('show-overview',wasOverview);
+  setCurrent(oldPage); fit(); window.scrollTo({top:oldScroll,behavior:'instant'});
+  return issues;
+}
+function showAudit() {
+  const issues = checkLayout();
+  console.table(issues);
+  toast(issues.length ? '发现 ' + issues.length + ' 处排版问题，首处：第 ' + issues[0].page + ' 页，' + issues[0].reason : '未发现越界或容器溢出；仍请逐页检查图片、公式和文字关系');
+}
+
+// 克隆后导出，不改变当前编辑状态；图片嵌入，下载后可移动到其他目录。
+async function exportHTML() {
+  const assetCache = window.BEIKE_ASSET_CACHE || {};
+  const clone = document.documentElement.cloneNode(true);
+  clone.querySelector('body').classList.remove('present','edit-on','show-notes','show-on','show-overview','show-zoomed','show-dragging');
+  const savedScrollView=showSession?.scrollView || scrollView;
+  const savedColumns=showSession?.columns || document.body.dataset.gridColumns;
+  clone.querySelector('body').dataset.scrollView=savedScrollView;
+  clone.querySelector('body').dataset.gridColumns=savedColumns;
+  clone.querySelector('body').classList.add('notes-hidden');
+  clone.querySelector('body').classList.toggle('grid-view',savedScrollView==='grid');
+  clone.querySelector('#grid-control').hidden=savedScrollView!=='grid';
+  clone.querySelectorAll('#view-mode option').forEach(option=>option.toggleAttribute('selected',option.value===savedScrollView));
+  clone.querySelectorAll('#grid-columns option').forEach(option=>option.toggleAttribute('selected',option.value===savedColumns));
+  clone.querySelector('main').style.removeProperty('padding-top');
+  clone.querySelector('.sidebar').style.removeProperty('top');
+  clone.style.removeProperty('--toolbar-offset');
+  clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  clone.querySelector('#text-tools').hidden=true;
+  clone.querySelectorAll('[data-format]').forEach(button=>button.disabled=true);
+  clone.querySelector('#text-color').disabled=true;
+  clone.querySelectorAll('#text-color option').forEach(option=>option.toggleAttribute('selected',option.value==='original'));
+  clone.querySelectorAll('.toolbar button').forEach(el => { el.classList.remove('active'); if (el.hasAttribute('aria-pressed')) el.setAttribute('aria-pressed','false'); });
+  clone.querySelectorAll('.frame').forEach(el => el.removeAttribute('style'));
+  clone.querySelectorAll('.notes').forEach(el => el.removeAttribute('open'));
+  clone.querySelectorAll('.math-render').forEach(el => el.remove());
+  clone.querySelectorAll('.math-ready').forEach(el => el.classList.remove('math-ready'));
+  clone.querySelectorAll('.math-fallback').forEach(el=>{el.hidden=false;el.removeAttribute('aria-hidden');});
+  clone.querySelector('#toast').classList.remove('show'); clone.querySelector('#toast').textContent = '';
+  clone.querySelector('#print-guide')?.removeAttribute('open');
+  clone.querySelector('#embedded-assets')?.remove();
+  const originalImages = [...document.querySelectorAll('img')], copies = [...clone.querySelectorAll('img')];
+  await Promise.all(originalImages.map(async (img, index) => {
+    if (img.src.startsWith('data:')) return;
+    const cached = assetCache[img.getAttribute('src')];
+    if (cached) { copies[index].setAttribute('src', cached); return; }
+    let data;
+    try {
+      const response = await fetch(img.currentSrc || img.src); if (!response.ok) throw new Error('image');
+      const blob = await response.blob();
+      data = await new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(blob); });
+    } catch {
+      // file:// 下 fetch 可能受限。画布读取可用时内嵌为 PNG，否则保留路径并在保存前报错。
+      const canvas = document.createElement('canvas'); canvas.width=img.naturalWidth; canvas.height=img.naturalHeight;
+      const context=canvas.getContext('2d'); if (!context || !canvas.width) throw new Error('无法读取图片：' + img.getAttribute('src'));
+      context.drawImage(img,0,0); data=canvas.toDataURL('image/png');
+    }
+    copies[index].setAttribute('src', data);
+  }));
+  return '<!DOCTYPE html>\n' + clone.outerHTML;
+}
+async function saveHTML() {
+  try {
+    const html = await exportHTML();
+    const url = URL.createObjectURL(new Blob([html], {type:'text/html;charset=utf-8'}));
+    const link = document.createElement('a'); link.href=url; link.download='北科科研汇报_编辑后.html'; link.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000); toast('已保存，文字与图片已包含在 HTML 中');
+  } catch(error) { console.error(error); toast('保存未完成：图片读取受限，请通过本地 HTTP 预览后再保存，或复制整个模板目录'); }
+}
+function openPrintGuide() {
+  const guide=document.getElementById('print-guide');
+  if(!guide.open) guide.showModal();
+}
+document.getElementById('print-cancel').addEventListener('click',()=>document.getElementById('print-guide').close());
+document.getElementById('print-confirm').addEventListener('click',()=>{
+  document.getElementById('print-guide').close();
+  window.print();
+});
+document.querySelector('.toolbar').addEventListener('click', event => {
+  const action = event.target.closest('button')?.dataset.action;
+  const actions = {prev:()=>gotoPage(currentPage-1), next:()=>gotoPage(currentPage+1), present:togglePresent, slideshow:startSlideshow, notes:toggleNotes, edit:toggleEdit, copy:copyCurrentPage, audit:showAudit, save:saveHTML, print:openPrintGuide};
+  actions[action]?.();
+});
+document.getElementById('view-mode').addEventListener('change',event=>setViewMode(event.target.value));
+document.getElementById('grid-columns').addEventListener('change',event=>setGridColumns(event.target.value));
+document.addEventListener('keydown', event => {
+  if((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase()==='p') {event.preventDefault();openPrintGuide();return;}
+  if(document.getElementById('print-guide').open) return;
+  if(event.key==='Escape' && showSession) {
+    event.preventDefault();if(event.repeat) return;
+    if(showZoom>1) {resetShowZoom();toast('已恢复原始大小，再按 Esc 退出放映');}
+    else stopSlideshow();return;
+  }
+  if (event.target.isContentEditable || /^(INPUT|TEXTAREA)$/.test(event.target.tagName)) return;
+  if (event.key === 'Escape' && document.body.classList.contains('present')) { togglePresent(); return; }
+  if (event.target.tagName==='SELECT') return;
+  if(showSession && document.body.classList.contains('show-overview')) return;
+  if (!document.body.classList.contains('present') || event.target.closest('button,a,summary')) return;
+  if (['ArrowRight','ArrowDown','PageDown',' '].includes(event.key)) { event.preventDefault(); gotoPage(currentPage+1); }
+  if (['ArrowLeft','ArrowUp','PageUp'].includes(event.key)) { event.preventDefault(); gotoPage(currentPage-1); }
+  if (event.key==='Home') { event.preventDefault(); gotoPage(1); }
+  if (event.key==='End') { event.preventDefault(); gotoPage(TOTAL_PAGES); }
+});
+let scrollPending = false;
+window.addEventListener('scroll', () => {
+  if (document.body.classList.contains('present') || scrollPending) return;
+  scrollPending = true;
+  requestAnimationFrame(() => {
+    const top = document.querySelector('.toolbar').getBoundingClientRect().bottom + 20;
+    // 多页同屏时优先保留仍清楚可见的选中页；末行无法滚到顶部，也不能丢失导航目标。
+    const selected=pages[currentPage-1].getBoundingClientRect();
+    const visibleHeight=Math.min(selected.bottom,innerHeight)-Math.max(selected.top,top);
+    if(document.body.classList.contains('grid-view') && visibleHeight>=Math.min(selected.height/2,120)) {scrollPending=false;return;}
+    const distances=pages.map(page=>Math.abs(page.getBoundingClientRect().top-top));
+    const distance=Math.min(...distances), row=pages.map((page,index)=>index+1).filter(n=>distances[n-1]<=distance+1);
+    if(!row.includes(currentPage)) {
+      const columns=document.body.classList.contains('grid-view') ? +document.body.dataset.gridColumns : 1;
+      setCurrent(row.find(n=>(n-1)%columns===(currentPage-1)%columns) || row[0]);
+    }
+    scrollPending=false;
+  });
+}, {passive:true});
+window.addEventListener('resize', fit);
+let tableFitPending=false;
+document.addEventListener('input',event=>{
+  if (!event.target.closest('[data-adaptive-table]') || tableFitPending) return;
+  tableFitPending=true;
+  requestAnimationFrame(()=>{adjustTables();tableFitPending=false;});
+});
+document.querySelector('main').addEventListener('click',event=>{
+  if(showSuppressClick) {showSuppressClick=false;event.preventDefault();event.stopPropagation();return;}
+  const link=event.target.closest('a[href^="#"]');
+  if(event.target.isContentEditable) return;
+  if(link) {
+    const target=document.getElementById(link.getAttribute('href').slice(1)), page=target?.closest('article.page');
+    if(page) {event.preventDefault();gotoPage(+page.dataset.page,target.id);}
+    return;
+  }
+  const page=event.target.closest('article.page');
+  if(page && event.target.closest('.frame') && document.body.classList.contains('grid-view') && !document.body.classList.contains('edit-on')) setCurrent(+page.dataset.page);
+});
+document.querySelector('main').addEventListener('dblclick',event=>{
+  if(showDrag || showSuppressClick) {event.preventDefault();showSuppressClick=false;return;}
+  if(showSession) {
+    if(event.target.closest('a,button,summary')) return;
+    event.preventDefault();getSelection()?.removeAllRanges();
+    if(document.body.classList.contains('show-overview')) {
+      const page=event.target.closest('article.page');if(page && event.target.closest('.frame')) resumeShowAt(+page.dataset.page);
+    } else showSlideOverview();
+    return;
+  }
+  if(!document.body.classList.contains('grid-view') || document.body.classList.contains('edit-on') || event.target.closest('a,button,summary')) return;
+  const page=event.target.closest('article.page');
+  if(page && event.target.closest('.frame')) {setCurrent(+page.dataset.page);setViewMode('present');}
+});
+window.addEventListener('hashchange', () => {const target=resolveHash();if(target)gotoPage(target.number,target.id);});
+document.body.classList.add('notes-hidden');
+buildNavigation();
+const initialHash = resolveHash();
+setCurrent(initialHash ? initialHash.number : 1);
+setViewMode(scrollView,{navigate:false});
+document.fonts?.ready.then(fit);
+window.addEventListener('load', () => {fit(); if(initialHash)gotoPage(initialHash.number,initialHash.id);});
+</script>
+
+
+</body></html>
