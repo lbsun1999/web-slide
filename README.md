@@ -17,6 +17,13 @@
 - 下载或克隆仓库后，在本地打开 `html2ppt-web-slide/index.html` 查看网页介绍
 - 测试、合作或授权联系：[byliao@xs.ustb.edu.cn](mailto:byliao@xs.ustb.edu.cn)
 
+## 公开文档中心
+
+[`html2ppt-web-slide-docs/`](html2ppt-web-slide-docs/) 只包含经过公开化整理的使用说明、排版规则、教学说明和功能截图，不包含模板 HTML、工作台源码、脚本或测试版发布包。
+
+- [文档目录与 Markdown 入口](html2ppt-web-slide-docs/README.md)
+- 下载或克隆仓库后，可在本地打开 `html2ppt-web-slide-docs/index.html` 浏览图文导航
+
 每套提供 20 页版式示例：封面、字号与配色规范、目录、章节过渡、研究现状时间轴、公式、伪代码、实验比较表、图片、总结计划、参考文献、作者简介及尾页。实际汇报按内容选择版式，不必保留全部示例。
 
 ## 快速开始
