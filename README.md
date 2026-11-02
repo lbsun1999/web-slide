@@ -2,10 +2,20 @@
 
 面向科研组会、学术汇报与答辩的 HTML 幻灯片模板，包含配套 AI 排版 skill。使用浏览器即可离线查看、放映和编辑文字。
 
+> **维护状态：** 本仓库中的早期学校模板已停止功能维护，仅作为历史示例保留。新一代 Web Slide 工作台正在私有仓库中测试，项目能力与申请方式见 [`html2ppt-web-slide/`](html2ppt-web-slide/)。
+
 | 模板 | 学校 | 主题 | 使用说明 |
 | --- | --- | --- | --- |
 | [web-slide-ustb](web-slide-ustb/) | 北京科技大学 | 科技蓝、钢铁红 | [独立 README](web-slide-ustb/README.md) |
 | [web-slide-lntu](web-slide-lntu/) | 辽宁工程技术大学 | 钢魂红、暖色浅底 | [独立 README](web-slide-lntu/README.md) |
+
+## 新版工作台
+
+[`html2ppt-web-slide/`](html2ppt-web-slide/) 是新版工作台的公开介绍目录，包含网页介绍、功能截图、测试状态和私有测试申请方式，不包含当前私有测试版源码与安装包。
+
+- [阅读 Markdown 说明](html2ppt-web-slide/README.md)
+- 下载或克隆仓库后，在本地打开 `html2ppt-web-slide/index.html` 查看网页介绍
+- 测试、合作或授权联系：[byliao@xs.ustb.edu.cn](mailto:byliao@xs.ustb.edu.cn)
 
 每套提供 20 页版式示例：封面、字号与配色规范、目录、章节过渡、研究现状时间轴、公式、伪代码、实验比较表、图片、总结计划、参考文献、作者简介及尾页。实际汇报按内容选择版式，不必保留全部示例。
 

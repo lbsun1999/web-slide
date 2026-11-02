@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Web Slide 工作台 · 公开介绍</title>
+  <style>
+    :root{--blue:#00639a;--blue2:#168eb4;--ink:#102f43;--muted:#5c7483;--line:#d5e2e9;--soft:#f2f7fa;--orange:#cf431c;--gold:#9c691f}
+    *{box-sizing:border-box}body{margin:0;background:#f5f8fa;color:var(--ink);font:16px/1.72 "Microsoft YaHei","PingFang SC",sans-serif}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.hero{background:linear-gradient(120deg,#005587,#168fb5);color:#fff}.hero-inner{width:min(1160px,calc(100% - 40px));margin:auto;padding:64px 0 58px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:54px;align-items:center}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.18em}.hero h1{margin:8px 0 2px;font-size:52px;line-height:1.12}.hero h2{margin:0 0 18px;font-size:30px}.hero p{max-width:760px;margin:0;font-size:18px}.brand{background:#fff;color:var(--ink);border-radius:18px;padding:18px 22px;box-shadow:0 20px 44px #00365342}.brand strong{display:block;font-size:24px}.brand small{color:var(--muted)}.brand .b{color:var(--orange)}.brand .l{color:var(--gold)}main{width:min(1160px,calc(100% - 40px));margin:34px auto 70px}.notice{padding:20px 24px;background:#fff8ed;border:1px solid #f0c979;border-left:5px solid #d99a18;border-radius:12px}.notice strong{color:#8c5100}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.button{display:inline-block;padding:10px 18px;border-radius:8px;background:var(--blue);color:#fff;font-weight:700}.button.secondary{background:#fff;color:var(--blue);border:1px solid #9fc2d5}.button:hover{text-decoration:none;filter:brightness(.96)}h2{margin:48px 0 18px;font-size:30px}.workflow{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 8px 22px #17475e0c}.card b{display:block;color:var(--blue);font-size:19px;margin-bottom:5px}.feature{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0 40px}.shot{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}.shot img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top}.shot div{padding:14px 18px}.shot strong{display:block;font-size:18px}.shot span{color:var(--muted)}.wide{margin-top:24px}.wide img{aspect-ratio:auto}.access{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}.access>div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px}.access ol{margin-bottom:0}.foot{padding:26px 20px;text-align:center;color:var(--muted);border-top:1px solid var(--line);background:#fff}@media(max-width:800px){.hero-inner,.access{grid-template-columns:1fr}.brand{max-width:340px}.hero h1{font-size:42px}.workflow,.feature{grid-template-columns:1fr}.hero-inner{padding-top:42px}}
+  </style>
+</head>
+<body>
+  <header class="hero"><div class="hero-inner"><div><div class="eyebrow">WEB SLIDE · PRIVATE BETA</div><h1>Web Slide 工作台</h1><h2>AI 与人工协作的科研幻灯片流程</h2><p>从材料、大纲和页面结构出发，在浏览器中精修文字、表格、公式、媒体与版式，再完成备注、放映和 PDF／PPTX 交付。</p></div><div class="brand"><strong>we<span class="b">B</span> s<span class="l">L</span>ide</strong><small>@lbsun1999 · GitHub</small></div></div></header>
+  <main>
+    <section class="notice"><strong>项目状态：</strong>公开仓库中的早期学校模板已停止功能维护，仅作为历史示例保留；新一代 <code>html2ppt-web-slide</code> 正在私有仓库中测试，暂不公开源码和安装包。</section>
+    <div class="actions"><a class="button" href="https://github.com/lbsun1999/web-slide/tree/main/html2ppt-web-slide">阅读项目说明</a><a class="button secondary" href="https://github.com/lbsun1999/web-slide">返回 web-slide</a><a class="button secondary" href="mailto:byliao@xs.ustb.edu.cn">联系测试／授权</a></div>
+    <h2>一条可以继续迭代的制作链路</h2>
+    <section class="workflow"><div class="card"><b>01　先定结构</b>AI 与用户先确认章节、逐页标题、页首句、页尾结论和备注，再生成页面骨架。</div><div class="card"><b>02　再做内容</b>复用模块化模板，编辑文字、表格、公式、图片、视频、时间轴和多子区域卡片。</div><div class="card"><b>03　人工终审</b>通过网格与高级对齐精修版式，检查事实、来源和换行，最后放映并导出。</div></section>
+    <div class="shot wide"><img src="assets/workbench-overview.png" alt="Web Slide 多页工作台"><div><strong>同一工作台完成页面管理、内容编辑和版式调整</strong><span>左侧管理页面，中间查看画布，右侧根据当前对象显示针对性设置。</span></div></div>
+    <h2>主要能力</h2>
+    <section class="feature"><div class="shot"><img src="assets/outline-manager.png" alt="文档大纲"><div><strong>大纲驱动</strong><span>把标题、正文摘要和备注映射到章节与页面，并能继续更新既有文稿。</span></div></div><div class="shot"><img src="assets/module-controls.png" alt="模块编辑"><div><strong>模块化人工精修</strong><span>调整模块、子区域、网格、尺寸、位置和样式，不把 AI 初稿当成最终稿。</span></div></div><div class="shot"><img src="assets/tutorial-catalog.png" alt="交互教学"><div><strong>分项交互教学</strong><span>在真实工作台里练习主题、大纲、文字、表格、公式、媒体、对齐与放映。</span></div></div><div class="shot"><img src="assets/presentation-presenter.png" alt="演讲者视图"><div><strong>演讲者双窗口</strong><span>观众窗口专注画面，工作台保留备注并同步翻页，适合扩展屏汇报。</span></div></div></section>
+    <h2>如何访问私有测试版</h2>
+    <section class="access"><div><strong>Private 仓库按 GitHub 账号授权</strong><ol><li>把测试者的 GitHub 用户名发送给仓库所有者。</li><li>所有者在仓库 Settings → Collaborators 中发出邀请。</li><li>测试者接受邀请后，即可查看、克隆和更新仓库。</li></ol></div><div><strong>测试、合作或授权联系</strong><p><a href="mailto:byliao@xs.ustb.edu.cn">byliao@xs.ustb.edu.cn</a></p><p>来信请附 GitHub 用户名、使用场景和预期用途。</p></div></section>
+  </main>
+  <footer class="foot">Web Slide · 项目介绍页 · 测试中的功能和界面可能继续调整</footer>
+</body>
+</html>
